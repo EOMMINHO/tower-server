@@ -1,2 +1,5 @@
-# tower_server
-It is a tower server for BNILab, KAIST
+# Fiber Drawing Tower Server
+
+Overview: It is a tower server for BNILab, KAIST
+
+Used: Node.js, express, flutter
