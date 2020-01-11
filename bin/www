@@ -20,6 +20,7 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
+var io = require("socket.io")(server);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -28,6 +29,18 @@ var server = http.createServer(app);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
+io.on("connection", function(socket) {
+  console.log("user connected!~");
+  socket.on("chat message", msg => {
+    setInterval(() => {
+      io.emit("chat message", msg);
+    }, 1000);
+    //io.emit("chat message", msg);
+  });
+  socket.on("disconnect", () => {
+    console.log("user disconnected!");
+  });
+});
 
 /**
  * Normalize a port into a number, string, or false.
@@ -84,3 +97,5 @@ function onListening() {
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }
+
+module.exports.io = io;
