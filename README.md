@@ -8,6 +8,13 @@ It is made for use with various devices including but not limited to, Android, I
 
 Used frameworks are Node.js and Express.
 
+### Updates
+
+- [ ] arduino code for heater
+- [ ] arduino code for stepper
+- [ ] real-time data transfer with socket
+- [ ] authentification
+
 ## How to use
 
 Select the temperature and the speed of motor.
@@ -16,20 +23,17 @@ The current status of them will be shown.
 
 The PID controlling of motor is not yet deployed and will be developed after getting a laser micrometer.
 
-## Tasks
-
-- [ ] arduino code for heater
-- [ ] arduino code for stepper
-- [ ] real-time data transfer with socket
-- [ ] authentification
-
 ## Arduino setup
 
-### Stepper motor
+### 1. Stepper motor
 
 Hardware Used: L298 stepper motor driver, NEMA17 stepper motor
 
 The host sends command by serial communication.
+
+#### Schematics
+
+will be added later...
 
 #### command info
 
@@ -39,9 +43,13 @@ e.g.) "12.31+": Turn the stepper motor with 12.31 rev/min clockwise.
 
 e.g.) "31.22-": Turn the stepper motor with 31.22 rev/min counterclockwise.
 
-### Heater
+### 2. Heater
 
 Hardware used: HDC00011, PT1000, CN142
+
+#### Schematics
+
+will be added later...
 
 #### command info
 
