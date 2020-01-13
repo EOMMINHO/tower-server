@@ -24,7 +24,7 @@ router.get("/", function(req, res, next) {
   });
 });
 
-router.put("/", function(req, res, next) {
+router.push("/", function(req, res, next) {
   speed1 = req.body.speed1;
   speed2 = req.body.speed2;
   res.send({
