@@ -8,7 +8,7 @@ It is made for use with various devices including but not limited to, Android, I
 
 Used frameworks are Node.js and Express.
 
-!! This is a server repository and the [client repository](https://github.com/EOMMINHO/tower-client) is available separately.
+:exclamation: This is a server repository and the [client repository](https://github.com/EOMMINHO/tower-client) is available separately.
 
 ### Updates
 
@@ -95,4 +95,4 @@ io.on("connection", function(socket) {
 
 ## Further Inquiry
 
-Please contact to the author: Minho Eom, KAIST, djaalsgh159@kaist.ac.kr
+:wave: Please contact to the author: Minho Eom, KAIST, djaalsgh159@kaist.ac.kr
