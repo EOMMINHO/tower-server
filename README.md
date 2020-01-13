@@ -23,6 +23,23 @@ The current status of them will be shown.
 
 The PID controlling of motor is not yet deployed and will be developed after getting a laser micrometer.
 
+### Environment Configuration
+
+There is **.env** file in the root directory. Change the environment variables to configure your own machine.
+
+- STEPPER1 : the preform stepper device
+- STEPPER2 : the fiber stepper device
+- HEATER1 : the heater device
+
+### REST API
+
+We use REST API to update current state of motor and heater.
+
+#### 1. Stepper motor
+
+GET http://serverName:portNumber/api/stepper: returns the current status of motors
+POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String}: updates the current status of motors
+
 ## Arduino setup
 
 ### 1. Stepper motor
@@ -72,3 +89,7 @@ io.on("connection", function(socket) {
   });
 });
 ```
+
+## Further Inquiry
+
+Please contact to the author: Minho Eom, KAIST, djaalsgh159@kaist.ac.kr
