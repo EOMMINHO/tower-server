@@ -37,7 +37,8 @@ We use REST API to update current state of motor and heater.
 
 #### 1. Stepper motor
 
-GET http://serverName:portNumber/api/stepper: returns the current status of motors
+GET "http://serverName:portNumber/api/stepper": returns the current status of motors
+
 POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String}: updates the current status of motors
 
 ## Arduino setup
