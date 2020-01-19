@@ -4,7 +4,7 @@
 
 It is a fiber drawing tower server for [BNILab, KAIST](https://www.bnilab.com/) :smile:
 
-It is made for use with various devices including but not limited to, Android, IOS, Web browsers to control the fiber drawing tower in BNILab, KAIST. The Andriod and IOS application can be downloaded separately while the web application is provided by through web.
+It is made for use with various devices including but not limited to, Android, IOS, Web browsers to control the fiber drawing tower in BNILab, KAIST. The Andriod and IOS application can be downloaded separately while the web application is provided through web.
 
 Used frameworks are Node.js and Express.
 
@@ -13,9 +13,8 @@ Used frameworks are Node.js and Express.
 ### Updates
 
 - [x] REST API for heater
-- [ ] REST API for stepper
-- [ ] arduino code for stepper
-- [ ] real-time data transfer with socket
+- [x] REST API for stepper
+- [x] arduino code for stepper
 - [ ] authentification
 
 ## How to use
@@ -46,7 +45,7 @@ We use REST API to update current state of motor and heater.
 
 GET http://serverName:portNumber/api/stepper: returns the current status of motors
 
-POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String }: updates the current status of motors
+POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean }: updates the current status of motors
 
 #### 2. Heater
 
@@ -54,37 +53,45 @@ GET http://serverName:portNumber/api/temperature: returns the current temperatur
 
 POST http://serverName:portNumber/api/temperature, body: { temp: Number }: updates the set points with tenths of degrees
 
-## Arduino setup
+## Device setup
 
 ### 1. Stepper motor
 
 Hardware Used: A4988 stepper motor driver, NEMA17 stepper motor, Arduino board
 
-The host sends command by serial communication.
+The current host sends command by serial communication without any protocol.
+The update version will include protocol with error recovery.
 
 #### Schematics
 
-will be added later...
+will be updated later...
 
 #### command info
 
-All commands need to finish with '\n' character. The first part includes the double data type and can including dot notation, which represents the speed of a stepper motor. The unit is revolution per minute. The second part include a sing character either '+' or '-'. Each means clockwise and counterclockwise respectively.
+All commands need to finish with '\n' character. The first part includes the double data type and can including dot notation, which represents the speed of a stepper motor. The unit is revolution per minute. The second part include a single character either '+' or '-'. Each means clockwise and counterclockwise respectively.
+To stop the stepper motor, command "stop".
 
 e.g.) "12.31+": Turn the stepper motor with 12.31 rev/min clockwise.
 
 e.g.) "31.22-": Turn the stepper motor with 31.22 rev/min counterclockwise.
 
+e.g.) "stop": Stop the stepper motor.
+
 ### 2. Heater
 
 Hardware used: HDC00011, PT1000, CN142-R1-DC2-C4
 
+The communication is held by Modbus protocol. The slave number can be chosen on **.env** file.
+
 #### Schematics
 
-will be added later...
+will be updated later...
 
 #### command info
 
-will be added later...
+- Modbus register number
+- 1000: The current process temperature by tenths of degree.
+- 1001: The current set temperature by tenths of degree.
 
 ## Front End applications
 

@@ -36,20 +36,29 @@ router.get("/", function(req, res, next) {
 
 // update the speed of the motor
 router.post("/", function(req, res, next) {
+  stop = req.body.stop;
   speed1 = req.body.speed1;
   direction1 = req.body.direction1;
   speed2 = req.body.speed2;
   direction2 = req.body.direction2;
-  // command via serial
-  stepper1.write(speed1 + direction1 + "\n");
-  stepper2.write(speed2 + direction2 + "\n");
-  // end command
-  res.send({
-    speed1: speed1,
-    speed2: speed2,
-    direction1: direction1,
-    direction2: direction2
-  });
+
+  // command via serial and send back to user
+  if (stop) {
+    stepper1.write("stop\n");
+    stepper2.write("stop\n");
+    res.send({
+      stop: "complete!"
+    });
+  } else {
+    stepper1.write(speed1 + direction1 + "\n");
+    stepper2.write(speed2 + direction2 + "\n");
+    res.send({
+      speed1: speed1,
+      speed2: speed2,
+      direction1: direction1,
+      direction2: direction2
+    });
+  }
 });
 
 module.exports = router;
