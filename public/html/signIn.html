@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fiber Drawing Tower Client</title>
+
+    <link href="../stylesheets/index.css" rel="stylesheet" />
+    <script src="../javascripts/signIn.js" defer></script>
+  </head>
+  <body>
+    <h1>BNILab Machine</h1>
+    <form action="users/signIn" method="POST">
+      <ul>
+        <li>
+          <label for="id">ID</label>
+          <input type="input" id="id" name="id" placeholder="ID" autofocus />
+        </li>
+        <li>
+          <label for="pw">Password</label>
+          <input type="password" id="pw" name="pw" placeholder="password" />
+        </li>
+        <li>
+          <label>Sign In</label>
+          <button type="button" id="signIn">Sign In</button>
+        </li>
+      </ul>
+    </form>
+  </body>
+</html>
