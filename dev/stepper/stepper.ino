@@ -3,9 +3,10 @@
 #include "A4988.h"
 
 // Number of steps per output rotation
-#define MOTOR_STEPS = 200 // For 1.8 degrees/step motors
-#define RPM = 120 // The RPM chosen (1-200 is a reasonable range), support floating point.
-#define MICRO_MODE = 1 
+#define MOTOR_STEPS 200 // For 1.8 degrees/step motors
+//#define RPM 120 
+// The RPM chosen (1-200 is a reasonable range), support floating point.
+#define MICRO_MODE 1 
 /* 
  * With A4988 driver, can choose: 1, 2, 4, 8, or 16
  * Mode 1 is full speed.
@@ -28,7 +29,7 @@ A4988 stepper(MOTOR_STEPS, DIR, STEP, SLEEP, MS1, MS2, MS3);
 void setup()
 {
   // initialize the serial port:
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // set stepper
   stepper.begin();
@@ -41,18 +42,27 @@ void loop()
   handleSerial();
 }
 
+void handleMove(long steps){
+   stepper.startMove(steps);
+   while(Serial.available() > 0){
+     String incomingString = Serial.readStringUntil('\n');
+     if(incomingString.equals("stop")){
+      stepper.stop();
+      Serial.println("stop complete");
+      break;
+    }
+    unsigned wait_time_micros = stepper.nextAction();
+    if (wait_time_micros > 100){
+      Serial.println("time enough");
+    }
+   }
+}
+
 void handleSerial(){
   while(Serial.available() > 0){
     // get serial input
     String incomingString = Serial.readStringUntil('\n');
     int clength = incomingString.length();
-
-    // stop the motor and out the loop
-    if(incomingString.equals("stop")){
-      stepper.stop();
-      Serial.print("stop complete");
-      break;
-    }
 
     // set RPM
     double incomingRev = incomingString.toDouble();
@@ -69,12 +79,12 @@ void handleSerial(){
     char incomingDir = incomingString[clength-1];
     switch(incomingDir){
       case '+':
-        stepper.startMove(0xFFFFFFFL); // this is a non-blocking function
-        Serial.println("clockwise");
+        Serial.println("cw");
+        handleMove(100000); // this is a non-blocking function
         break;
       case '-':
-        stepper.startMove(-0xFFFFFFFL);
-        Serial.println("counterclockwise");
+        Serial.println("ccw");
+        handleMove(-100000);
         break;
     }
   }
