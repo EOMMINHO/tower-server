@@ -44,14 +44,18 @@ void loop()
 
 void handleMove(long steps){
    stepper.startMove(steps);
-   while(Serial.available() > 0){
-     String incomingString = Serial.readStringUntil('\n');
-     if(incomingString.equals("stop")){
-      stepper.stop();
-      Serial.println("stop complete");
-      break;
+   while(true){
+    if(Serial.available() > 0) {
+      String incomingString = Serial.readStringUntil('\n');
+      if(incomingString.equals("stop")){
+        stepper.stop();
+        Serial.println("stop complete");
+      }
     }
     unsigned wait_time_micros = stepper.nextAction();
+    if (wait_time_micros <= 0){
+      break;
+    }
     if (wait_time_micros > 100){
       Serial.println("time enough");
     }
