@@ -4,8 +4,6 @@
 
 // Number of steps per output rotation
 #define MOTOR_STEPS 200 // For 1.8 degrees/step motors
-//#define RPM 120 
-// The RPM chosen (1-200 is a reasonable range), support floating point.
 #define MICRO_MODE 1 
 /* 
  * With A4988 driver, can choose: 1, 2, 4, 8, or 16
@@ -42,24 +40,24 @@ void loop()
   handleSerial();
 }
 
-void handleMove(long steps){
-   stepper.startMove(steps);
+// until command "stop\n", it rotates forever.
+void handleMove(long angle){
+  while(true){
+   stepper.startRotate(angle);
    while(true){
     if(Serial.available() > 0) {
       String incomingString = Serial.readStringUntil('\n');
       if(incomingString.equals("stop")){
         stepper.stop();
-        Serial.println("stop complete");
+        return;
       }
     }
-    unsigned wait_time_micros = stepper.nextAction();
+    long wait_time_micros = stepper.nextAction();
     if (wait_time_micros <= 0){
       break;
     }
-    if (wait_time_micros > 100){
-      Serial.println("time enough");
-    }
    }
+  }
 }
 
 void handleSerial(){
@@ -84,11 +82,11 @@ void handleSerial(){
     switch(incomingDir){
       case '+':
         Serial.println("cw");
-        handleMove(100000); // this is a non-blocking function
+        handleMove(360); // this is a non-blocking function
         break;
       case '-':
         Serial.println("ccw");
-        handleMove(-100000);
+        handleMove(-360);
         break;
     }
   }
