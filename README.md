@@ -47,11 +47,15 @@ GET http://serverName:portNumber/api/stepper: returns the current status of moto
 
 POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean }: updates the current status of motors
 
+- The speed must be lower than 300 REV/MIN for reliable operation.
+
 #### 2. Heater
 
 GET http://serverName:portNumber/api/temperature: returns the current temperature of heater with tenths of degrees
 
 POST http://serverName:portNumber/api/temperature, body: { temp: Number }: updates the set points with tenths of degrees
+
+- The temperature must be lower than 400 degrees celsius for reliable operation
 
 ## Device setup
 
@@ -62,6 +66,8 @@ Hardware Used: A4988 stepper motor driver, NEMA17 stepper motor, Arduino board
 The current host sends command by serial communication without any protocol.
 The update version will include protocol with error recovery.
 
+Arduino need a program in the folder: /dev/stepper/stepper.ino
+
 #### Schematics
 
 will be updated later...
@@ -71,11 +77,11 @@ will be updated later...
 All commands need to finish with '\n' character. The first part includes the double data type and can including dot notation, which represents the speed of a stepper motor. The unit is revolution per minute. The second part include a single character either '+' or '-'. Each means clockwise and counterclockwise respectively.
 To stop the stepper motor, command "stop".
 
-e.g.) "12.31+": Turn the stepper motor with 12.31 rev/min clockwise.
+e.g.) "12.31+\n": Turn the stepper motor with 12.31 rev/min clockwise.
 
-e.g.) "31.22-": Turn the stepper motor with 31.22 rev/min counterclockwise.
+e.g.) "31.22-\n": Turn the stepper motor with 31.22 rev/min counterclockwise.
 
-e.g.) "stop": Stop the stepper motor.
+e.g.) "stop\n": Stop the stepper motor.
 
 ### 2. Heater
 
@@ -92,24 +98,6 @@ will be updated later...
 - Modbus register number
 - 1000: The current process temperature by tenths of degree.
 - 1001: The current set temperature by tenths of degree.
-
-## Front End applications
-
-```javascript
-//example code
-io.on("connection", function(socket) {
-  console.log("user connected!~");
-  socket.on("chat message", msg => {
-    setInterval(() => {
-      io.emit("chat message", msg);
-    }, 1000);
-    //io.emit("chat message", msg);
-  });
-  socket.on("disconnect", () => {
-    console.log("user disconnected!");
-  });
-});
-```
 
 ## Further Inquiry
 

@@ -3,10 +3,10 @@ const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 var express = require("express");
 var router = express.Router();
-const stepper1 = new SerialPort(process.env.STEPPER1, {
+const stepper1 = new SerialPort(process.env.STEPPER1_DEV, {
   baudRate: parseInt(process.env.STEPPER1_BAUD)
 });
-const stepper2 = new SerialPort(process.env.STEPPER2, {
+const stepper2 = new SerialPort(process.env.STEPPER2_DEV, {
   baudRate: parseInt(process.env.STEPPER1_BAUD)
 });
 
