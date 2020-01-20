@@ -4,7 +4,7 @@
 
 It is a fiber drawing tower server for [BNILab, KAIST](https://www.bnilab.com/) :smile:
 
-It is made for use with various devices including but not limited to, Android, IOS, Web browsers to control the fiber drawing tower in BNILab, KAIST. The Andriod and IOS application can be downloaded separately while the web application is provided through web.
+It is made for use with various devices including but not limited to, Android, IOS, Web browsers to control the fiber drawing tower in BNILab, KAIST. The Andriod and IOS application can be downloaded separately while the web application is provided through the server itself.
 
 Used frameworks are Node.js and Express.
 
@@ -17,47 +17,7 @@ Used frameworks are Node.js and Express.
 - [x] arduino code for stepper
 - [ ] authentification
 
-## How to use
-
-Select the temperature and the speed of motor.
-The minimum and maximum of them are fixed.
-The current status of them will be shown.
-
-The PID controlling of motor is not yet deployed and will be developed after getting a laser micrometer.
-
-### Environment Configuration
-
-There is **.env** file in the root directory. Change the environment variables to configure your own machine.
-
-- STEPPER1_DEV : the preform stepper device path
-- STEPPER1_BAUD : the preform stepper device baud-rate
-- STEPPER2_DEV : the fiber stepper device path
-- STEPPER2_BAUD : the fiber stepper device baud-rate
-- HEATER_DEV : the heater device path
-- HEATER_BAUD : the heater device baud-rate
-- HEATER_SLAVE : the heater device Mosbus slave number
-
-### REST API
-
-We use REST API to update current state of motor and heater.
-
-#### 1. Stepper motor
-
-GET http://serverName:portNumber/api/stepper: returns the current status of motors
-
-POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean }: updates the current status of motors
-
-- The speed must be lower than 300 REV/MIN for reliable operation.
-
-#### 2. Heater
-
-GET http://serverName:portNumber/api/temperature: returns the current temperature of heater with tenths of degrees
-
-POST http://serverName:portNumber/api/temperature, body: { temp: Number }: updates the set points with tenths of degrees
-
-- The temperature must be lower than 400 degrees celsius for reliable operation
-
-## Device setup
+## Prerequisite: Device setup
 
 ### 1. Stepper motor
 
@@ -98,6 +58,46 @@ will be updated later...
 - Modbus register number
 - 1000: The current process temperature by tenths of degree.
 - 1001: The current set temperature by tenths of degree.
+
+## How to use
+
+Select the temperature and the speed of motor.
+The minimum and maximum of them are fixed.
+The current status of them will be shown.
+
+The PID controlling of motor is not yet deployed and will be developed after getting a laser micrometer.
+
+### Environment Configuration
+
+There is **.env** file in the root directory. Change the environment variables to configure your own machine.
+
+- STEPPER1_DEV : the preform stepper device path
+- STEPPER1_BAUD : the preform stepper device baud-rate
+- STEPPER2_DEV : the fiber stepper device path
+- STEPPER2_BAUD : the fiber stepper device baud-rate
+- HEATER_DEV : the heater device path
+- HEATER_BAUD : the heater device baud-rate
+- HEATER_SLAVE : the heater device Mosbus slave number
+
+### REST API
+
+We use REST API to update current state of motor and heater.
+
+#### 1. Stepper motor
+
+GET http://serverName:portNumber/api/stepper: returns the current status of motors
+
+POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean }: updates the current status of motors
+
+- The speed must be lower than 300 REV/MIN for reliable operation.
+
+#### 2. Heater
+
+GET http://serverName:portNumber/api/temperature: returns the current temperature of heater with tenths of degrees
+
+POST http://serverName:portNumber/api/temperature, body: { temp: Number }: updates the set points with tenths of degrees
+
+- The temperature must be lower than 400 degrees celsius for reliable operation
 
 ## Further Inquiry
 
