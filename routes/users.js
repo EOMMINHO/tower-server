@@ -1,33 +1,17 @@
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const _ = require("lodash");
 const { User } = require("../model/user");
 const mongoose = require("mongoose");
-const path = require("path");
 var debug = require("debug")("towerServer:server");
 var express = require("express");
 var router = express.Router();
 
-async function createUser(id, pw, isAdmin) {
-  //make user object
-  const user = new User({
-    ID: id,
-    PW: pw,
-    isAdmin: isAdmin
-  });
-
-  const result = await user.save();
-  debug(result._id);
-}
-
-async function getUsers(id) {
-  const users = await User.find({
-    ID: id
-  });
-  debug(users);
-}
-
-async function removeUser(id) {
-  const result = await User.deleteOne({ ID: id });
-  debug(result);
+async function test() {
+  const salt = await bcrypt.genSalt(10);
+  const hashed = await bcrypt.hash("abcd", salt);
+  debug(hashed);
 }
 
 router.post("/signIn", async function(req, res) {
@@ -36,14 +20,19 @@ router.post("/signIn", async function(req, res) {
   debug(id);
   debug(pw);
 
-  //authentication test (DO NOT USE FOR PRODUCTION!!!!!!!!!)
-  if (id === process.env.ADMIN_ID && pw === process.env.ADMIN_PW) {
-    res
-      .status(200)
-      .sendFile(path.join(__dirname + "/../public/html/setting.html"));
-  } else {
-    res.status(401).send("authentication wrong!");
-  }
+  //find and authenticate user
+  let user = await User.findOne({ ID: id });
+  if (!user) return res.status(400).send("No ID Found.");
+
+  const validPW = await bcrypt.compare(pw, user.PW);
+  if (!validPW) return res.status(400).send("Wrong password.");
+
+  //send jsonWebToken
+  const token = jwt.sign(
+    { isAuthorized: user.isAuthorized },
+    process.env.JWT_PRIVATE_KEY
+  );
+  res.header("x-auth-token", token).send(token);
 });
 
 router.post("/signUp", async function(req, res) {
@@ -52,15 +41,29 @@ router.post("/signUp", async function(req, res) {
   debug(id);
   debug(pw);
 
-  const user = new User({
+  //check duplicate ID
+  let user = await User.findOne({ ID: id });
+  if (user) return res.status(400).send("ID already registered.");
+
+  //hashing
+  const salt = await bcrypt.genSalt(10);
+  pw = await bcrypt.hash(pw, salt);
+
+  //register new user
+  user = new User({
     ID: id,
     PW: pw,
     isAdmin: false,
     isAuthorized: false
   });
 
-  const result = await user.save();
-  res.send(result._id);
+  await user.save();
+
+  const token = jwt.sign(
+    { isAuthorized: user.isAuthorized },
+    process.env.JWT_PRIVATE_KEY
+  );
+  res.header("x-auth-token", token).send(_.pick(user, ["_id"]));
 });
 
 module.exports = router;

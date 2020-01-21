@@ -16,7 +16,7 @@ var app = express();
 
 //connect to MongoDB
 mongoose
-  .connect(process.env.DB_URL + "/tower")
+  .connect("mongodb://127.0.0.1:27017/tower")
   .then(() => debug("Connected to MongoDB."))
   .catch(err => debug("Could not connect to MongoDB.", err));
 
