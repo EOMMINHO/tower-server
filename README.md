@@ -65,7 +65,7 @@ will be updated later...
 ### Database
 
 We use MongoDB.
-Download, install, and executre right version on [download center](https://www.mongodb.com/download-center/community).
+Download, install, and execute right version on [download center](https://www.mongodb.com/download-center/community).
 
 ### Environment Configuration
 
