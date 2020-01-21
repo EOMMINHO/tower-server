@@ -10,15 +10,17 @@ signInBtn.addEventListener("click", e => {
     },
     body: JSON.stringify({ id: id.value, pw: pw.value })
   }).then(function(response) {
-    if (response.status === 401) {
+    if (response.status === 400) {
       console.log("wrong authentication");
       //id.value = "";
       pw.value = "";
       window.alert("Wrong authentication");
       pw.focus();
-    } else if (response.status === 200) {
+    } else {
       console.log("good authentication");
-      window.location.href = "html/setting.html";
+      const token = response.headers.get("x-auth-token");
+      localStorage.setItem("x-auth-token", token);
+      window.location.href = "/html/setting.html";
     }
   });
 });
