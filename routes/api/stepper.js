@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { auth } = require("../../middleware/auth");
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 var express = require("express");
@@ -35,7 +36,7 @@ router.get("/", function(req, res, next) {
 });
 
 // update the speed of the motor
-router.post("/", function(req, res, next) {
+router.post("/", auth, function(req, res, next) {
   stop = req.body.stop;
   speed1 = req.body.speed1;
   direction1 = req.body.direction1;

@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { auth } = require("../../middleware/auth");
 var express = require("express");
 var router = express.Router();
 const SerialPort = require("serialport");
@@ -13,7 +14,7 @@ const serialPort = new SerialPort(process.env.HEATER_DEV, {
 const master = new ModbusMaster(serialPort);
 
 //get the current temperature with tenths of degree.
-router.get("/", function(req, res, next) {
+router.get("/", auth, function(req, res, next) {
   master.readHoldingRegisters(process.env.HEATER_SLAVE, 1000, 1).then(
     temp_array => {
       let temp = temp_array[0];
@@ -31,7 +32,7 @@ router.get("/", function(req, res, next) {
 });
 
 //set the setpoint with tenths of degree.
-router.post("/", function(req, res, next) {
+router.post("/", auth, function(req, res, next) {
   let temp = req.body.temp;
   master.writeSingleRegister(process.env.HEATER_SLAVE, 1001, temp).then(
     success => {
