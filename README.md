@@ -15,9 +15,10 @@ Used frameworks are Node.js and Express.
 - [x] REST API for heater
 - [x] REST API for stepper
 - [x] arduino code for stepper
-- [ ] authentification
+- [x] authentification
+- [ ] Temperature graph
 
-## Prerequisite: Device setup
+## (Prerequisite) 1. Device setup
 
 ### 1. Stepper motor
 
@@ -59,13 +60,12 @@ will be updated later...
 - 1000: The current process temperature by tenths of degree.
 - 1001: The current set temperature by tenths of degree.
 
-## How to use
+## (Prerequisite) 2. Server setup
 
-Select the temperature and the speed of motor.
-The minimum and maximum of them are fixed.
-The current status of them will be shown.
+### Database
 
-The PID controlling of motor is not yet deployed and will be developed after getting a laser micrometer.
+We use MongoDB.
+Download, install, and executre right version on [download center](https://www.mongodb.com/download-center/community).
 
 ### Environment Configuration
 
@@ -78,6 +78,21 @@ There is **.env** file in the root directory. Change the environment variables t
 - HEATER_DEV : the heater device path
 - HEATER_BAUD : the heater device baud-rate
 - HEATER_SLAVE : the heater device Mosbus slave number
+- PORT : the port used by the server
+- DB_HOST : the name of the host DB
+- DB_PORT : the port used by the host DB
+- DB_SUNAME : the superuser ID for DB
+- DB_PW : the password of SU for DB
+- JWT_PRIVATE_KEY : the private key used for encrypting JWT
+
+## How to use
+
+Use API call to
+
+1. POST the temperature and the speed. The minimum and maximum of them exist.
+2. GET current status.
+
+The PID controlling of motor is not yet deployed and will be developed after a laser micrometer implementation.
 
 ### REST API
 
