@@ -8,12 +8,11 @@ var debug = require("debug")("towerServer:server");
 var express = require("express");
 var router = express.Router();
 
-async function test() {
-  const salt = await bcrypt.genSalt(10);
-  const hashed = await bcrypt.hash("abcd", salt);
-  debug(hashed);
-}
-
+/*
+ * sign up API
+ *
+ * Body: id and pw
+ */
 router.post("/signIn", async function(req, res) {
   let id = req.body.id;
   let pw = req.body.pw;
@@ -27,14 +26,20 @@ router.post("/signIn", async function(req, res) {
   const validPW = await bcrypt.compare(pw, user.PW);
   if (!validPW) return res.status(400).send("Wrong password.");
 
-  //send jsonWebToken
+  //send JWT if authenticated
   const token = jwt.sign(
-    { isAuthorized: user.isAuthorized },
+    { isAuthorized: user.isAuthorized, isAdmin: user.isAdmin },
     process.env.JWT_PRIVATE_KEY
   );
   res.header("x-auth-token", token).send(token);
 });
 
+/*
+ * sign up API
+ *
+ * Body: id and pw
+ * IF id duplicated, reject
+ */
 router.post("/signUp", async function(req, res) {
   let id = req.body.id;
   let pw = req.body.pw;
@@ -59,11 +64,13 @@ router.post("/signUp", async function(req, res) {
 
   await user.save();
 
+  //return JWT and _id
   const token = jwt.sign(
-    { isAuthorized: user.isAuthorized },
+    { isAuthorized: user.isAuthorized, isAdmin: user.isAdmin },
     process.env.JWT_PRIVATE_KEY
   );
   res.header("x-auth-token", token).send(_.pick(user, ["_id"]));
 });
 
+//exports
 module.exports = router;
