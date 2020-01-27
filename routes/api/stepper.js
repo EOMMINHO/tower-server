@@ -1,9 +1,10 @@
 require("dotenv").config();
-const { auth } = require("../../middleware/auth");
+const { authUser } = require("../../middleware/auth");
 const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 var express = require("express");
 var router = express.Router();
+
 const stepper1 = new SerialPort(process.env.STEPPER1_DEV, {
   baudRate: parseInt(process.env.STEPPER1_BAUD)
 });
@@ -25,18 +26,20 @@ let speed1 = 0,
   speed2 = 0;
 let direction1 = "+",
   direction2 = "+";
+let onStatus = false;
 
-router.get("/", function(req, res, next) {
+router.get("/", authUser, function(req, res, next) {
   res.send({
     speed1: speed1,
     speed2: speed2,
     direction1: direction1,
-    direction2: direction2
+    direction2: direction2,
+    onStatus: onStatus
   });
 });
 
 // update the speed of the motor
-router.post("/", auth, function(req, res, next) {
+router.post("/", authUser, function(req, res, next) {
   stop = req.body.stop;
   speed1 = req.body.speed1;
   direction1 = req.body.direction1;
@@ -47,12 +50,14 @@ router.post("/", auth, function(req, res, next) {
   if (stop) {
     stepper1.write("stop\n");
     stepper2.write("stop\n");
+    onStatus = false;
     res.send({
       stop: "complete!"
     });
   } else {
     stepper1.write(speed1 + direction1 + "\n");
     stepper2.write(speed2 + direction2 + "\n");
+    onStatus = true;
     res.send({
       speed1: speed1,
       speed2: speed2,

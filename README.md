@@ -16,7 +16,11 @@ Used frameworks are Node.js and Express.
 - [x] REST API for stepper
 - [x] arduino code for stepper
 - [x] authentification
+- [x] authorization
+- [ ] On/Off status
 - [ ] Temperature graph
+- [ ] Stepper Modbus implementation
+- [ ] Database encryption
 
 ## (Prerequisite) 1. Device setup
 

@@ -9,6 +9,7 @@ var debug = require("debug")("towerServer:server");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+//uncomment two lines for deployment
 //var stepperRouter = require("./routes/api/stepper");
 //var tempRouter = require("./routes/api/temperature");
 var adminRouter = require("./routes/admin");
@@ -34,6 +35,7 @@ app.use(express.static("public"));
 //set routers
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+//uncomment two lines for deployment
 //app.use("/api/stepper", stepperRouter);
 //app.use("/api/temperature", tempRouter);
 app.use("/admin", adminRouter);
