@@ -17,10 +17,10 @@ Used frameworks are Node.js and Express.
 - [x] arduino code for stepper
 - [x] authentification
 - [x] authorization
-- [ ] On/Off status
-- [ ] Temperature graph
+- [x] On/Off status
 - [ ] Stepper Modbus implementation
-- [ ] Database encryption
+- [x] status database
+- [ ] DB encryption
 
 ## (Prerequisite) 1. Device setup
 

@@ -9,7 +9,7 @@ var express = require("express");
 var router = express.Router();
 
 /*
- * sign up API
+ * sign in API
  *
  * Body: id and pw
  */

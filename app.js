@@ -13,6 +13,7 @@ var usersRouter = require("./routes/users");
 //var stepperRouter = require("./routes/api/stepper");
 //var tempRouter = require("./routes/api/temperature");
 var adminRouter = require("./routes/admin");
+var recordRouter = require("./routes/record");
 
 var app = express();
 
@@ -39,6 +40,7 @@ app.use("/users", usersRouter);
 //app.use("/api/stepper", stepperRouter);
 //app.use("/api/temperature", tempRouter);
 app.use("/admin", adminRouter);
+app.use("/record", recordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
