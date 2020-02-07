@@ -5,6 +5,8 @@
 // Number of steps per output rotation
 #define MOTOR_STEPS 200 // For 1.8 degrees/step motors
 #define MICRO_MODE 1 
+#define MOTOR_ACCEL 2000
+#define MOTOR_DECEL 1000
 /* 
  * With A4988 driver, can choose: 1, 2, 4, 8, or 16
  * Mode 1 is full speed.
@@ -33,6 +35,9 @@ void setup()
   stepper.begin();
   stepper.enable();
   stepper.setMicrostep(MICRO_MODE);
+
+  // set LINEAR_SPEED (accelerated)
+  stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
 }
 
 void loop() 
@@ -40,20 +45,53 @@ void loop()
   handleSerial();
 }
 
-// until command "stop\n", it rotates forever.
-void handleMove(long angle){
+// until command something, it rotates forever.
+// command (1), "stop\n": stop the stepper
+// command (2), speed and direction info: change the speed of stepper
+void handleMove(char direction){
+  char incomingDIR = '0';
   while(true){
-   stepper.startRotate(angle);
+    // set stepper rotation
+    // if incomingDIR information exist, use that information.
+    if(incomingDIR == '0'){
+      if(direction == '+'){
+        stepper.startRotate(360);
+      }else if(direction == '-'){
+        stepper.startRotate(-360);
+      }
+    }else{
+      if(incomingDIR == '+'){
+        stepper.startRotate(360);
+      }else if(incomingDIR == '-'){
+        stepper.startRotate(-360);
+      }
+    }
+   
+   // pulse generation
    while(true){
+     // command checking
     if(Serial.available() > 0) {
       String incomingString = Serial.readStringUntil('\n');
-      if(incomingString.equals("stop")){
+      if(incomingString.equals("stop")){ // stop command
         stepper.stop();
         return;
+      }else{ // speed command (changes speed)
+        int clength = incomingString.length();
+        double incomingRPM = incomingString.toDouble();
+        incomingDIR = incomingString[clength-1];
+        stepper.setRPM(incomingRPM);
+        break;
       }
     }
     long wait_time_micros = stepper.nextAction();
-    if (wait_time_micros <= 0){
+    if(wait_time_micros){
+      Serial.print("  dt="); Serial.print(wait_time_micros);
+      Serial.print("  rpm="); Serial.print(stepper.getCurrentRPM());
+      Serial.println();
+    }else{
+      // the last action
+      // delay for next iteration, delay must be different for currentRPM.
+      stepper.delayMicros(stepper.getTimeForMove(1));
       break;
     }
    }
