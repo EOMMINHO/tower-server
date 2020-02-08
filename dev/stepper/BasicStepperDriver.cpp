@@ -309,6 +309,8 @@ long BasicStepperDriver::nextAction(void){
         last_action_end = micros();
         m = last_action_end - m;
         next_action_interval = (pulse > m) ? pulse - m : 1;
+        // if it's the last pulse, increase steps further
+        if(steps_remaining == 0) alterMove(200);
     } else {
         // end of move
         last_action_end = 0;

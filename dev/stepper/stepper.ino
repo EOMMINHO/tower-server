@@ -23,11 +23,18 @@
 #define MS2 11
 #define MS3 12
 
+#define BOTTOM_PIN 6
+#define TOP_PIN 7
+
 // Instantiate stepper
 A4988 stepper(MOTOR_STEPS, DIR, STEP, SLEEP, MS1, MS2, MS3);
 
 void setup()
 {
+  // limit switch setting
+  pinMode(BOTTOM_PIN, INPUT);
+  pinMode(TOP_PIN, INPUT);
+
   // initialize the serial port:
   Serial.begin(115200);
 
@@ -37,7 +44,7 @@ void setup()
   stepper.setMicrostep(MICRO_MODE);
 
   // set LINEAR_SPEED (accelerated)
-  stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
+  // stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
 }
 
 void loop() 
@@ -68,33 +75,37 @@ void handleMove(char direction){
     }
    
    // pulse generation
-   while(true){
-     // command checking
-    if(Serial.available() > 0) {
-      String incomingString = Serial.readStringUntil('\n');
-      if(incomingString.equals("stop")){ // stop command
-        stepper.stop();
-        return;
-      }else{ // speed command (changes speed)
-        int clength = incomingString.length();
-        double incomingRPM = incomingString.toDouble();
-        incomingDIR = incomingString[clength-1];
-        stepper.setRPM(incomingRPM);
+    while(true){
+      long wait_time_micros = stepper.nextAction();
+      
+      if(wait_time_micros){
+        // not the last action
+        // the code inside this block must be executed shorter than wait_time_micros
+        Serial.print("  dt="); Serial.print(wait_time_micros);
+        Serial.print("  rpm="); Serial.print(stepper.getCurrentRPM());
+        Serial.println();
+        // command checking
+        if(Serial.available() > 0) {
+          String incomingString = Serial.readStringUntil('\n');
+          if(incomingString.equals("stop")){ // stop command
+            stepper.stop();
+            return;
+          }else{ // speed command (changes speed)
+            int clength = incomingString.length();
+            double incomingRPM = incomingString.toDouble();
+            incomingDIR = incomingString[clength-1];
+            stepper.setRPM(incomingRPM);
+            break;
+          }
+        }
+      }else{
+        // the last action
+        // delay for next iteration, delay must be different for currentRPM.
+        // stepper.delayMicros(stepper.getTimeForMove(1));
+        Serial.println("this never happens");
         break;
       }
     }
-    long wait_time_micros = stepper.nextAction();
-    if(wait_time_micros){
-      Serial.print("  dt="); Serial.print(wait_time_micros);
-      Serial.print("  rpm="); Serial.print(stepper.getCurrentRPM());
-      Serial.println();
-    }else{
-      // the last action
-      // delay for next iteration, delay must be different for currentRPM.
-      stepper.delayMicros(stepper.getTimeForMove(1));
-      break;
-    }
-   }
   }
 }
 
