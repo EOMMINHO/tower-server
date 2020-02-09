@@ -25,8 +25,8 @@
 
 // interval in microseconds
 // current_interval = (3*10^5)/(RPM)
-long current_interval = 500;
-double current_RPM = 60;
+long current_interval = 5000;
+double current_RPM = 0;
 double want_RPM = 60;
 int current_DIR = HIGH; //HIGH direction => down, LOW direction => up
 
@@ -68,7 +68,8 @@ void handleSerial()
 
     // set RPM
     double incomingRev = incomingString.toDouble();
-    current_RPM = incomingRev;
+    want_RPM = incomingRev;
+    current_RPM = 1;  // first setting goes 1
     current_interval = (3e+5)/(current_RPM);
 
     // set direction
@@ -117,8 +118,8 @@ void handleMove()
           char incomingDIR = incomingString[clength-1];
 
           // change global variables
-          current_RPM = incomingRPM;
-          current_interval = (3e+5)/(current_RPM);
+          want_RPM = incomingRPM;
+          // current_interval = (3e+5)/(current_RPM);
           switch(incomingDir){
             case '+':
               current_DIR = HIGH;
@@ -148,6 +149,9 @@ void handleMove()
       if(ACCEL_ON){
         if(current_RPM < want_RPM){
           current_RPM += (current_interval/(1e+6))*(MOTOR_ACCEL);
+          current_interval = (3e+5)/(current_RPM);
+        }else{
+          current_RPM -= (current_interval/(1e+6))*(MOTOR_DECEL);
           current_interval = (3e+5)/(current_RPM);
         }
       }
