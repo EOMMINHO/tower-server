@@ -3,8 +3,9 @@
 
 // Number of steps per output rotation
 #define MOTOR_STEPS 200 // For 1.8 degrees/step motors
-#define MOTOR_ACCEL 2000
-#define MOTOR_DECEL 1000
+#define MOTOR_ACCEL 1000 // revolution per square time
+#define MOTOR_DECEL 1000 // revolution per square time
+#define ACCEL_ON true
 /* 
  * With A4988 driver, can choose: 1, 2, 4, 8, or 16
  * Mode 1 is full speed.
@@ -26,7 +27,8 @@
 // current_interval = (3*10^5)/(RPM)
 long current_interval = 500;
 double current_RPM = 60;
-int current_DIR = HIGH;
+double want_RPM = 60;
+int current_DIR = HIGH; //HIGH direction => down, LOW direction => up
 
 // for non blocking function
 unsigned long previousMicros = 0;
@@ -127,14 +129,27 @@ void handleMove()
               digitalWrite(DIR, LOW);
               break;
           }
-          break;
         }
       }
-      // (2) limit switch 
+      // (2) limit switch (bottom)
+      // HIGH bottom pin means the motor must go up
       if(digitalRead(BOTTOM_PIN) == HIGH){
-        //digitalWrite(DIR, !current_DIR);
-        digitalWrite(STEP, LOW);
+        digitalWrite(DIR, current_DIR = LOW);
+      }
+
+      // (3) limit switch (top)
+      // HIGH top pin means the motor must stop
+      if(digitalRead(TOP_PIN) == HIGH){
+        digitalWrite(DIR, current_DIR = HIGH);
         return;
+      }
+
+      // (4) acceleration
+      if(ACCEL_ON){
+        if(current_RPM < want_RPM){
+          current_RPM += (current_interval/(1e+6))*(MOTOR_ACCEL);
+          current_interval = (3e+5)/(current_RPM);
+        }
       }
 
       //end left time
