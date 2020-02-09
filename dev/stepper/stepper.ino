@@ -44,7 +44,7 @@ void setup()
   stepper.setMicrostep(MICRO_MODE);
 
   // set LINEAR_SPEED (accelerated)
-  // stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
+  stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
 }
 
 void loop() 
@@ -131,11 +131,11 @@ void handleSerial(){
     switch(incomingDir){
       case '+':
         Serial.println("cw");
-        handleMove(360); // this is a non-blocking function
+        handleMove('+'); // this is a non-blocking function
         break;
       case '-':
         Serial.println("ccw");
-        handleMove(-360);
+        handleMove('-');
         break;
     }
   }
