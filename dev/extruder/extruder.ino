@@ -13,6 +13,9 @@
 #define MS2 11
 #define MS3 12
 
+#define UP LOW
+#define DOWN HIGH
+
 // interval in microseconds
 // current_interval = (3*10^5)/(RPM)
 long current_interval = 150000;
@@ -22,6 +25,8 @@ int current_DIR = HIGH; //HIGH direction => down, LOW direction => up
 // GLOBAL VARIABLES
 unsigned long previousMicros = 0; // for non blocking function
 bool TOP_PIN_flag = false;
+bool delay_flag_BOTTOM = true;
+bool delay_flag_TOP = true;
 
 void setup()
 {
@@ -70,11 +75,11 @@ void handleSerial()
     current_RPM = incomingRev;
     current_interval = (3e+5)/(current_RPM);
     if(incomingDir == '+'){
-        current_DIR = HIGH;
-        digitalWrite(DIR, HIGH);
+        current_DIR = UP;
+        digitalWrite(DIR, UP);
     }else if(incomingDir == '-'){
-        current_DIR = LOW;
-        digitalWrite(DIR, LOW);
+        current_DIR = DOWN;
+        digitalWrite(DIR, DOWN);
     }
 
     // actual turning
@@ -105,6 +110,7 @@ void handleMove()
           return;
         }else{ // speed command => change speed immediately
           // get RPM, diretion, and location
+          int clength = incomingString.length();
           double incomingRev = incomingString.toDouble();
           char incomingDir = incomingString[clength-1];
 
@@ -112,11 +118,11 @@ void handleMove()
           current_RPM = incomingRev;
           current_interval = (3e+5)/(current_RPM);
           if(incomingDir == '+'){
-            current_DIR = HIGH;
-            digitalWrite(DIR, HIGH);
+            current_DIR = UP;
+            digitalWrite(DIR, UP);
           }else if(incomingDir == '-'){
-            current_DIR = LOW;
-            digitalWrite(DIR, LOW);
+            current_DIR = DOWN;
+            digitalWrite(DIR, DOWN);
           }
 
         }
@@ -125,20 +131,35 @@ void handleMove()
       // (2) limit switch (bottom)
       // HIGH bottom pin means the motor must go up faster (200RPM)
       if(digitalRead(BOTTOM_PIN) == HIGH){
-        digitalWrite(DIR, current_DIR = LOW);
+        current_DIR = UP;
+        digitalWrite(DIR, UP);
         current_RPM = 200;
         current_interval = (3e+5)/(current_RPM);
+        if(delay_flag_BOTTOM){
+            digitalWrite(STEP, LOW);
+            delay(1000);
+            delay_flag_BOTTOM = false;
+        }
       }
 
       // (3) limit switch (top)
       // HIGH top pin means the motor must stop
-      if(digitalRead(TOP_PIN) == HIGH){ // going up process
-        digitalWrite(DIR, current_DIR = HIGH);
+      if(digitalRead(TOP_PIN) == HIGH){ // clicked and going down
+        current_DIR = DOWN;
+        digitalWrite(DIR, DOWN);
+        if(delay_flag_TOP){
+            digitalWrite(STEP, LOW);
+            delay(1000);
+            delay_flag_TOP = false;
+        }
         TOP_PIN_flag = true;
-      }else if(TOP_PIN_flag){ // going down process
+      }else if(TOP_PIN_flag){ // process complete
         TOP_PIN_flag = false;
         digitalWrite(STEP, LOW);
         current_RPM = 0;
+        Serial.println("process complete");
+        delay_flag_TOP = true;
+        delay_flag_BOTTOM = true;
         return;
       }
 
