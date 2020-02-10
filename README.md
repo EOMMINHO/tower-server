@@ -4,11 +4,9 @@
 
 It is a fiber drawing tower server for [BNILab, KAIST](https://www.bnilab.com/) :smile:
 
-It is made for use with various devices including but not limited to, Android, IOS, Web browsers to control the fiber drawing tower in BNILab, KAIST. The Andriod and IOS application can be downloaded separately while the web application is provided through the server itself.
+It is made for use with various devices including but not limited to, Android, IOS, Web browsers to control the fiber drawing tower in BNILab, KAIST. Andriod and IOS application can be downloaded separately.
 
-Used frameworks are Node.js and Express.
-
-:exclamation: This is a server repository and the [client repository](https://github.com/EOMMINHO/tower-client) is available separately.
+:exclamation: This is an API server repository and the [client repository](https://github.com/EOMMINHO/tower-client) is available separately.
 
 ### Updates
 
@@ -22,7 +20,15 @@ Used frameworks are Node.js and Express.
 - [x] status database
 - [ ] DB encryption
 
+## Acknowledgments
+This program and physical devices has taken several months to make and benefited from contributions of many individuals. I wish to thank the following for their helps: Joon Hee Won(KAIST), Seongjun Park(KAIST), David Donghyun Kim(Massachusetts Institute of Technology).
+I thank all other members, BNI Lab.
+
+Minho Eom.
+
 ## (Prerequisite) 1. Device setup
+
+You will setup devices for a fiber drawing tower here.
 
 ### 1. Stepper motor
 
@@ -64,12 +70,24 @@ will be updated later...
 - 1000: The current process temperature by tenths of degree.
 - 1001: The current set temperature by tenths of degree.
 
+### 3. Laser Micrometer (optional)
+
+It is possible not to use laser micrometer. However, using it will enable you to use feedback control to help maintain constant diameter of fiber.
+
+we used [LS9006 model](https://www.keyence.com/products/measure/micrometer/ls-9000/) for < 200 micrometer scale fiber.
+
+#### Schematics
+
+will be updated later...
+
 ## (Prerequisite) 2. Server setup
+
+You will configure DB, environment variables, and NodeJS here.
 
 ### Database
 
-We use MongoDB.
-Download, install, and execute right version on [download center](https://www.mongodb.com/download-center/community).
+We use MongoDB for authentication, authorization, and saving other user project data.
+Download and install the right version on [download center](https://www.mongodb.com/download-center/community).
 
 ### Environment Configuration
 
@@ -82,6 +100,9 @@ There is **.env** file in the root directory. Change the environment variables t
 - HEATER_DEV : the heater device path
 - HEATER_BAUD : the heater device baud-rate
 - HEATER_SLAVE : the heater device Mosbus slave number
+- MICROMETER_USE : (boolean) whether using it or not
+- MICROMETER_DEV : micrometer device path
+- MICROMETER_BAUD : micrometer baud-rate
 - PORT : the port used by the server
 - DB_HOST : the name of the host DB
 - DB_PORT : the port used by the host DB
@@ -89,16 +110,34 @@ There is **.env** file in the root directory. Change the environment variables t
 - DB_PW : the password of SU for DB
 - JWT_PRIVATE_KEY : the private key used for encrypting JWT
 
-## How to use
+### Node.js
 
-Use API call to
+We use Node.js. Download it on the [offical website](https://nodejs.org/en/).
+After then, open a terminal and follow the instructions below.
 
-1. POST the temperature and the speed. The minimum and maximum of them exist.
+1. npm install
+2. npm start
+
+## Let's start using!
+
+This is an REST API server, and if you configured devices correctly, the server will now work!
+
+To request API, you would need to install [postman](https://www.postman.com/) on your client side computer. The following is the general concept of request.
+
+1. POST the temperature, stepper speed, and fiber diameter. The minimum and maximum of them exist.
 2. GET current status.
 
-The PID controlling of motor is not yet deployed and will be developed after a laser micrometer implementation.
+### Details (user information)
 
-### REST API
+We use REST API to update and record user information for their projects.
+
+#### 1. Sign-Up
+
+#### 2. Sign-In
+
+#### 3. Record project
+
+### Details (sensor and actuators)
 
 We use REST API to update current state of motor and heater.
 
@@ -117,6 +156,18 @@ GET http://serverName:portNumber/api/temperature: returns the current temperatur
 POST http://serverName:portNumber/api/temperature, body: { temp: Number }: updates the set points with tenths of degrees
 
 - The temperature must be lower than 400 degrees celsius for reliable operation
+
+#### 3. Micrometer
+
+It is only enabled if you had a micrometer setting. If not, you can still run your machine in a open-loop way!
+
+GET http://serverName:portNumber/api/micrometer: returns the current diameter of a fiber in micrometer unit
+POST http://serverName:portNumber/api/micrometer: updates the set diameter in micrometer unit.
+
+## WATCH OUT!
+
+It uses high power heaters to draw fiber from a preform. It can cause severe damage to you. Always be careful while using it!!!
+
 
 ## Further Inquiry
 
