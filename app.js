@@ -7,17 +7,25 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var debug = require("debug")("towerServer:server");
 
+// Routers
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-//uncomment two lines for deployment
-//var stepperRouter = require("./routes/api/stepper");
-//var tempRouter = require("./routes/api/temperature");
+if (process.env.STEPPER_USE === "true") {
+  var ExtruderRouter = require("./routes/api/extruder");
+  var FiberRouter = require("./routes/api/fiber");
+}
+if (process.env.HEATER_USE === "true") {
+  var HeaterRouter = require("./routes/api/temperature");
+}
+if (process.env.MICROMETER_USE === "true") {
+  var MicrometerRouter = require("./routes/api/micrometer");
+}
 var adminRouter = require("./routes/admin");
 var recordRouter = require("./routes/record");
 
 var app = express();
 
-//connect to MongoDB
+// Connect to MongoDB
 mongoose
   .connect("mongodb://127.0.0.1:27017/tower")
   .then(() => debug("Connected to MongoDB."))
@@ -35,12 +43,19 @@ app.use(express.static("public"));
 
 //set routers
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-//uncomment two lines for deployment
-//app.use("/api/stepper", stepperRouter);
-//app.use("/api/temperature", tempRouter);
-app.use("/admin", adminRouter);
-app.use("/record", recordRouter);
+app.use("/api/users", usersRouter);
+if (process.env.STEPPER_USE === "true") {
+  app.use("/api/extruder", ExtruderRouter);
+  app.use("/api/fiber", FiberRouter);
+}
+if (process.env.HEATER_USE === "true") {
+  app.use("/api/temperature", HeaterRouter);
+}
+if (process.env.MICROMETER_USE === "true") {
+  app.use("/api/diameter", MicrometerRouter);
+}
+app.use("/api/admin", adminRouter);
+app.use("/api/record", recordRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

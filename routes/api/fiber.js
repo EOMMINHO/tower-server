@@ -5,35 +5,26 @@ const Readline = require("@serialport/parser-readline");
 var express = require("express");
 var router = express.Router();
 
-const stepper1 = new SerialPort(process.env.STEPPER1_DEV, {
-  baudRate: parseInt(process.env.STEPPER1_BAUD)
-});
-const stepper2 = new SerialPort(process.env.STEPPER2_DEV, {
-  baudRate: parseInt(process.env.STEPPER1_BAUD)
+// set up serial port
+const fiber = new SerialPort(process.env.STEPPER2_DEV, {
+  baudRate: parseInt(process.env.STEPPER2_BAUD)
 });
 
-const parser1 = new Readline();
-const parser2 = new Readline();
+const parser = new Readline();
 
-stepper1.pipe(parser1);
-stepper2.pipe(parser1);
+fiber.pipe(parser);
 
-parser1.on("data", line => console.log(`> ${line}`));
-parser2.on("data", line => console.log(`> ${line}`));
+parser.on("data", line => console.log(`> ${line}`));
 
 // current state of arduino
-let speed1 = 0,
-  speed2 = 0;
-let direction1 = "+",
-  direction2 = "+";
+let speed = 0;
+let direction = "+";
 let onStatus = false;
 
 router.get("/", authUser, function(req, res, next) {
   res.send({
-    speed1: speed1,
-    speed2: speed2,
-    direction1: direction1,
-    direction2: direction2,
+    speed: speed,
+    direction: direction,
     onStatus: onStatus
   });
 });
@@ -41,28 +32,22 @@ router.get("/", authUser, function(req, res, next) {
 // update the speed of the motor
 router.post("/", authUser, function(req, res, next) {
   stop = req.body.stop;
-  speed1 = req.body.speed1;
-  direction1 = req.body.direction1;
-  speed2 = req.body.speed2;
-  direction2 = req.body.direction2;
+  speed = req.body.speed;
+  direction = req.body.direction;
 
   // command via serial and send back to user
-  if (stop) {
-    stepper1.write("stop\n");
-    stepper2.write("stop\n");
+  if (stop || speed === "0") {
+    fiber.write("stop\n");
     onStatus = false;
     res.send({
       stop: "complete!"
     });
   } else {
-    stepper1.write(speed1 + direction1 + "\n");
-    stepper2.write(speed2 + direction2 + "\n");
+    fiber.write(speed + direction + "\n");
     onStatus = true;
     res.send({
-      speed1: speed1,
-      speed2: speed2,
-      direction1: direction1,
-      direction2: direction2
+      speed: speed,
+      direction: direction
     });
   }
 });

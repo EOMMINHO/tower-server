@@ -16,13 +16,13 @@ It is made for use with various devices including but not limited to, Android, I
 - [x] authentification
 - [x] authorization
 - [x] On/Off status
-- [ ] Stepper Modbus implementation
 - [x] status database
 - [ ] DB encryption
+- [ ] PID controlling
 
 ## Acknowledgments
 This program and physical devices has taken several months to make and benefited from contributions of many individuals. I wish to thank the following for their helps: Joon Hee Won(KAIST), Seongjun Park(KAIST), David Donghyun Kim(Massachusetts Institute of Technology).
-I thank all other members, BNI Lab.
+I thank all other members, BNILab, KAIST.
 
 Minho Eom.
 
@@ -84,19 +84,25 @@ will be updated later...
 
 You will configure DB, environment variables, and NodeJS here.
 
-### Database
+### 1. Database
 
 We use MongoDB for authentication, authorization, and saving other user project data.
+
 Download and install the right version on [download center](https://www.mongodb.com/download-center/community).
 
-### Environment Configuration
+* /data/db folder permission required for MongoDB.
+* Use MongoDB Compass for GUI interaction.
+
+### 2. Environment Configuration
 
 There is **.env** file in the root directory. Change the environment variables to configure your own machine.
 
+- STEPPER_USE : (boolean) whether using it or not
 - STEPPER1_DEV : the preform stepper device path
 - STEPPER1_BAUD : the preform stepper device baud-rate
 - STEPPER2_DEV : the fiber stepper device path
 - STEPPER2_BAUD : the fiber stepper device baud-rate
+- HEATER_USE : (boolean) whether using it or not
 - HEATER_DEV : the heater device path
 - HEATER_BAUD : the heater device baud-rate
 - HEATER_SLAVE : the heater device Mosbus slave number
@@ -110,7 +116,7 @@ There is **.env** file in the root directory. Change the environment variables t
 - DB_PW : the password of SU for DB
 - JWT_PRIVATE_KEY : the private key used for encrypting JWT
 
-### Node.js
+### 3. Node.js
 
 We use Node.js. Download it on the [offical website](https://nodejs.org/en/).
 After then, open a terminal and follow the instructions below.
@@ -122,7 +128,7 @@ After then, open a terminal and follow the instructions below.
 
 This is an REST API server, and if you configured devices correctly, the server will now work!
 
-To request API, you would need to install [postman](https://www.postman.com/) on your client side computer. The following is the general concept of request.
+To request via API call, you would need to install [postman](https://www.postman.com/) on your client side computer. The following is the general concept of request.
 
 1. POST the temperature, stepper speed, and fiber diameter. The minimum and maximum of them exist.
 2. GET current status.
@@ -133,27 +139,75 @@ We use REST API to update and record user information for their projects.
 
 #### 1. Sign-Up
 
+You can make an account
+
+(1) POST http://serverName:portNumber/api/users/signUp
+
+body: {id: String, pw: String}
+
 #### 2. Sign-In
 
-#### 3. Record project
+You can check authentication
+
+(1) POST http://serverName:portNumber/api/users/signIn
+
+body: {id: String, pw: String}
+
+#### 3. Record Project
+
+You can record and see the project.
+
+(1) POST http://serverName:portNumber/api/record/writeProject
+
+body: {projectName: String, updated: Date, temp: Number, recordDate: Array of Date, diameter: Array of Number}
+
+(2) POST http://serverName:portNumber/api/record/readProject
+
+body: {projectName: String}
+
+#### 4. Admin Tools
+
+You can find users and change authorization.
+
+(1) POST http://serverName:portNumber/api/admin/findUserInfo
+
+body: {id: String}
+
+(2) POST http://serverName:portNumber/api/admin/changeAuth
+
+body: {id: String, isAuthorized: String}
 
 ### Details (sensor and actuators)
 
 We use REST API to update current state of motor and heater.
 
+These APIs will not be available for the unauthorized users.
+
 #### 1. Stepper motor
 
-GET http://serverName:portNumber/api/stepper: returns the current status of motors
+(1) GET http://serverName:portNumber/api/stepper
 
-POST http://serverName:portNumber/api/stepper, body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean }: updates the current status of motors
+returns the current status of motors
+
+(2) POST http://serverName:portNumber/api/stepper
+
+body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean}
+
+updates the current status of motors
 
 - The speed must be lower than 300 REV/MIN for reliable operation.
 
 #### 2. Heater
 
-GET http://serverName:portNumber/api/temperature: returns the current temperature of heater with tenths of degrees
+(1) GET http://serverName:portNumber/api/temperature
 
-POST http://serverName:portNumber/api/temperature, body: { temp: Number }: updates the set points with tenths of degrees
+returns the current temperature of heater with tenths of degrees
+
+(2) POST http://serverName:portNumber/api/temperature
+
+body: { temp: Number }
+
+updates the set points with tenths of degrees
 
 - The temperature must be lower than 400 degrees celsius for reliable operation
 
@@ -161,13 +215,24 @@ POST http://serverName:portNumber/api/temperature, body: { temp: Number }: updat
 
 It is only enabled if you had a micrometer setting. If not, you can still run your machine in a open-loop way!
 
-GET http://serverName:portNumber/api/micrometer: returns the current diameter of a fiber in micrometer unit
-POST http://serverName:portNumber/api/micrometer: updates the set diameter in micrometer unit.
+(1) GET http://serverName:portNumber/api/micrometer
+
+returns the current diameter of a fiber in micrometer unit
+
+(2) POST http://serverName:portNumber/api/micrometer
+
+updates the set diameter in micrometer unit.
 
 ## WATCH OUT!
 
-It uses high power heaters to draw fiber from a preform. It can cause severe damage to you. Always be careful while using it!!!
+It uses high power heaters to draw fiber from a preform. It can cause severe damage to you.
 
+Always be careful while using it !!!
+
+
+## Extra Notes
+
+I used NodeJS, Express, JsonWebToken, MongoDB & Mongoose, SerialPort, Modbus.
 
 ## Further Inquiry
 

@@ -1,47 +1,51 @@
 require("dotenv").config();
 const _ = require("lodash");
-const { Temp } = require("../model/temp");
+const { Project } = require("../model/project");
 const { authUser } = require("../middleware/auth");
 var express = require("express");
 var router = express.Router();
 
 /*
- * record temperature API
+ * record project API
  *
- * Body: projectName(String), date(String array), temp(Number array)
+ * Body: projectName(String), date(String), temp(Number)
  */
-router.post("/temp", authUser, async function(req, res) {
+router.post("/writeProject", authUser, async function(req, res) {
   let projectName = req.body.projectName;
-  let date = req.body.date;
+  let updated = req.body.updated;
   let temp = req.body.temp;
+  let recordDate = req.body.recordDate;
+  let diameter = req.body.diameter;
 
   //change String array to date array
-  let newDate = date.map(current => {
+  let newDate = recordDate.map(current => {
     return new Date(current);
   });
 
-  temp = new Temp({
+  project = new Project({
     projectName: projectName,
-    date: newDate,
-    temp: temp
+    updated: updated,
+    temp: temp,
+    recordDate: newDate,
+    diameter: diameter
   });
 
-  await temp.save();
+  await project.save();
 
   res.send(projectName + " recorded complete");
 });
 
 /*
- * Get recorded temperature API
+ * Get recorded project API
  */
-router.post("/getTemp", authUser, async function(req, res) {
+router.post("/readProject", authUser, async function(req, res) {
   let projectName = req.body.projectName;
 
-  let temp = await Temp.findOne({ projectName: projectName });
+  let project = await Project.findOne({ projectName: projectName });
 
-  if (!temp) res.status(400).send("No such project");
+  if (!project) res.status(400).send("No such project");
 
-  res.send(temp);
+  res.send(project);
 });
 
 //exports
