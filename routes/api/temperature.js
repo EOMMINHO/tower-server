@@ -57,7 +57,7 @@ router.post("/", authUser, function(req, res, next) {
   // data type checking
   const { error, value } = schema.validate({ temp: temp });
   if (error !== undefined) {
-    res.send(value);
+    res.send(error.details[0].message);
   }
 
   // if not error, write via Modbus protocol

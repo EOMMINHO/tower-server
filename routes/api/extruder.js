@@ -54,7 +54,7 @@ router.post("/", authUser, function(req, res, next) {
     direction: direction
   });
   if (error !== undefined) {
-    res.send(value);
+    res.send(error.details[0].message);
   }
 
   // command via serial and send back to user

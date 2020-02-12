@@ -22,7 +22,7 @@ const writeProjectSchema = Joi.object({
     .min(50)
     .max(300),
   recordDate: Joi.array().items(Joi.string()),
-  diameter: Joi.array().number()
+  diameter: Joi.array().items(Joi.number())
 });
 
 router.post("/writeProject", authUser, async function(req, res) {
@@ -41,7 +41,7 @@ router.post("/writeProject", authUser, async function(req, res) {
     diameter: diameter
   });
   if (error !== undefined) {
-    res.send(value);
+    res.send(error.details[0].message);
   }
 
   //change String array to date array

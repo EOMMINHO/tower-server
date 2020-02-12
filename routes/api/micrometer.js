@@ -45,7 +45,7 @@ router.post("/", authUser, function(req, res, next) {
   // data type checking
   const { error, value } = schema.validate({ diameter: diameter });
   if (error !== undefined) {
-    res.send(value);
+    res.send(error.details[0].message);
   }
 
   // if no error, send correct
