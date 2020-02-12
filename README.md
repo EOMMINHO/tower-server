@@ -148,7 +148,9 @@ You can make an account
 
 (1) POST http://serverName:portNumber/api/users/signUp
 
-body: { id: string.min(3).max(30) , pw: string.min(3).max(30) }
+Body
+- id: string.min(3).max(30)
+- pw: string.min(3).max(30)
 
 #### 2. Sign-In
 
@@ -156,7 +158,9 @@ You can check authentication
 
 (1) POST http://serverName:portNumber/api/users/signIn
 
-body: { id: string.min(3).max(30) , pw: string.min(3).max(30) }
+Body
+- id: string.min(3).max(30)
+- pw: string.min(3).max(30)
 
 #### 3. Record Project
 
@@ -164,22 +168,24 @@ You can record and see the project. (only for authorized user)
 
 (1) POST http://serverName:portNumber/api/record/writeProject
 
-body: { projectName: Joi.string()
+Body
+- projectName: Joi.string()
     .min(2)
-    .max(100),
-  updated: Joi.string().isoDate(),
-  temp: Joi.number()
+    .max(100)
+- updated: Joi.string().isoDate()
+- temp: Joi.number()
     .integer()
     .min(50)
-    .max(300),
-  recordDate: Joi.array().items(Joi.string()),
-  diameter: Joi.array().items(Joi.number()) }
+    .max(300)
+- recordDate: Joi.array().items(Joi.string())
+- diameter: Joi.array().items(Joi.number())
 
 (2) POST http://serverName:portNumber/api/record/readProject
 
-body: { projectName: Joi.string()
+Body
+- projectName: Joi.string()
     .min(2)
-    .max(100) }
+    .max(100)
 
 #### 4. Admin Tools
 
@@ -187,16 +193,18 @@ You can find users and change authorization. (only for admin)
 
 (1) POST http://serverName:portNumber/api/admin/findUserInfo
 
-body: { id: Joi.string()
+Body
+- id: Joi.string()
     .min(3)
-    .max(30) }
+    .max(30)
 
 (2) POST http://serverName:portNumber/api/admin/changeAuth
 
-body: { id: Joi.string()
+Body
+- id: Joi.string()
     .min(3)
-    .max(30),
-  isAuthorized: Joi.boolean() }
+    .max(30)
+- isAuthorized: Joi.boolean()
 
 ### Details (sensor and actuators)
 
@@ -209,24 +217,28 @@ These APIs will not be available for the unauthorized users.
 You can see and change the motor speed (only for authorized user)
 
 (1-1) GET http://serverName:portNumber/api/extruder
+
 (1-2) GET http://serverName:portNumber/api/fiber
 
 returns the current status of motors
 
 (2-1) POST http://serverName:portNumber/api/extruder
+
 (2-2) POST http://serverName:portNumber/api/fiber
 
-body: { stop: Joi.boolean(),
-  speed: Joi.number()
+Body
+- stop: Joi.boolean()
+- speed: Joi.number()
     .min(1)
-    .max(270),
-  direction: Joi.string()
+    .max(270)
+- direction: Joi.string()
     .length(1)
-    .pattern(/^[+-]$/) }
+    .pattern(/^[+-]$/)
 
 updates the current status of motors
 
-- The speed must be lower than 300 REV/MIN for reliable operation.
+- The speed must be lower than 250 RPM for reliable operation.
+- 250 ~ 270 RPM is available without stability
 
 #### 2. Heater
 
@@ -238,14 +250,16 @@ returns the current temperature of heater with tenths of degrees
 
 (2) POST http://serverName:portNumber/api/temperature
 
-body: { temp: Joi.number()
+Body
+- temp: Joi.number()
     .integer()
     .min(50)
-    .max(300) }
+    .max(300)
 
 updates the set points with tenths of degrees
 
 - The temperature must be lower than 400 degrees celsius for reliable operation
+- Temperature can be up to 565 degrees celsius without stability
 
 #### 3. Micrometer
 
@@ -257,10 +271,11 @@ returns the current diameter of a fiber in micrometer unit
 
 (2) POST http://serverName:portNumber/api/micrometer
 
-body: { diameter: Joi.number()
+Body
+- diameter: Joi.number()
     .integer()
     .min(100)
-    .max(500) }
+    .max(500)
 
 updates the set diameter in micrometer unit.
 
