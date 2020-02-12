@@ -4,18 +4,45 @@ const { Project } = require("../model/project");
 const { authUser } = require("../middleware/auth");
 var express = require("express");
 var router = express.Router();
+const Joi = require("@hapi/joi");
 
 /*
  * record project API
  *
- * Body: projectName(String), date(String), temp(Number)
+ * Body: projectName(String), updated(String), temp(Number)
  */
+// schema
+const writeProjectSchema = Joi.object({
+  projectName: Joi.string()
+    .min(2)
+    .max(100),
+  updated: Joi.string().isoDate(),
+  temp: Joi.number()
+    .integer()
+    .min(50)
+    .max(300),
+  recordDate: Joi.array().items(Joi.string()),
+  diameter: Joi.array().number()
+});
+
 router.post("/writeProject", authUser, async function(req, res) {
   let projectName = req.body.projectName;
   let updated = req.body.updated;
   let temp = req.body.temp;
   let recordDate = req.body.recordDate;
   let diameter = req.body.diameter;
+
+  // data type checking
+  const { error, value } = writeProjectSchema.validate({
+    projectName: projectName,
+    updated: updated,
+    temp: temp,
+    recordDate: recordDate,
+    diameter: diameter
+  });
+  if (error !== undefined) {
+    res.send(value);
+  }
 
   //change String array to date array
   let newDate = recordDate.map(current => {
