@@ -65,8 +65,23 @@ router.post("/writeProject", authUser, async function(req, res) {
 /*
  * Get recorded project API
  */
+// schema
+const readProjectSchema = Joi.object({
+  projectName: Joi.string()
+    .min(2)
+    .max(100)
+});
+
 router.post("/readProject", authUser, async function(req, res) {
   let projectName = req.body.projectName;
+
+  // data type checking
+  const { error, value } = readProjectSchema.validate({
+    projectName: projectName
+  });
+  if (error !== undefined) {
+    res.send(error.details[0].message);
+  }
 
   let project = await Project.findOne({ projectName: projectName });
 

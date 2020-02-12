@@ -1,5 +1,4 @@
 require("dotenv").config();
-const Joi = require("@hapi/joi");
 const { authAdmin } = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -9,10 +8,30 @@ const mongoose = require("mongoose");
 var debug = require("debug")("towerServer:server");
 var express = require("express");
 var router = express.Router();
+const Joi = require("@hapi/joi");
 
-//find ID and change authorization
+// find every user
+router.post("/findEveryUser", authAdmin, async function(req, res) {
+  return res.send("not implemented yet");
+});
+
+// find specific user
+// schema
+const findUserSchema = Joi.object({
+  id: Joi.string()
+    .min(3)
+    .max(30)
+});
+
 router.post("/findUserInfo", authAdmin, async function(req, res) {
   let id = req.body.id;
+  // data type checking
+  const { error, value } = findUserSchema.validate({
+    id: id
+  });
+  if (error !== undefined) {
+    res.send(error.details[0].message);
+  }
 
   //find and authenticate user
   let user = await User.findOne({ ID: id });
@@ -21,10 +40,26 @@ router.post("/findUserInfo", authAdmin, async function(req, res) {
   return res.send(user);
 });
 
-//find ID and change authorization
+// find ID and change authorization
+// schema
+const changeAuthSchema = Joi.object({
+  id: Joi.string()
+    .min(3)
+    .max(30),
+  isAuthorized: Joi.boolean()
+});
+
 router.post("/changeAuth", authAdmin, async function(req, res) {
   let id = req.body.id;
   let isAuthorized = req.body.isAuthorized;
+  // data type checking
+  const { error, value } = changeAuthSchema.validate({
+    id: id,
+    isAuthorized: isAuthorized
+  });
+  if (error !== undefined) {
+    res.send(error.details[0].message);
+  }
 
   //find and authenticate user
   let user = await User.findOne({ ID: id });

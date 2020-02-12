@@ -136,6 +136,8 @@ To request via API call, you would need to install [postman](https://www.postman
 1. POST the temperature, stepper speed, and fiber diameter. The minimum and maximum of them exist.
 2. GET current status.
 
+All body requirements are writen as [Joi](https://hapi.dev/family/joi/tester/) statement. 
+
 ### Details (user information)
 
 We use REST API to update and record user information for their projects.
@@ -146,7 +148,7 @@ You can make an account
 
 (1) POST http://serverName:portNumber/api/users/signUp
 
-body: {id: String, pw: String}
+body: { id: string.min(3).max(30) , pw: string.min(3).max(30) }
 
 #### 2. Sign-In
 
@@ -154,7 +156,7 @@ You can check authentication
 
 (1) POST http://serverName:portNumber/api/users/signIn
 
-body: {id: String, pw: String}
+body: { id: string.min(3).max(30) , pw: string.min(3).max(30) }
 
 #### 3. Record Project
 
@@ -162,11 +164,22 @@ You can record and see the project. (only for authorized user)
 
 (1) POST http://serverName:portNumber/api/record/writeProject
 
-body: {projectName: String, updated: Date, temp: Number, recordDate: Array of Date, diameter: Array of Number}
+body: { projectName: Joi.string()
+    .min(2)
+    .max(100),
+  updated: Joi.string().isoDate(),
+  temp: Joi.number()
+    .integer()
+    .min(50)
+    .max(300),
+  recordDate: Joi.array().items(Joi.string()),
+  diameter: Joi.array().items(Joi.number()) }
 
 (2) POST http://serverName:portNumber/api/record/readProject
 
-body: {projectName: String}
+body: { projectName: Joi.string()
+    .min(2)
+    .max(100) }
 
 #### 4. Admin Tools
 
@@ -174,11 +187,16 @@ You can find users and change authorization. (only for admin)
 
 (1) POST http://serverName:portNumber/api/admin/findUserInfo
 
-body: {id: String}
+body: { id: Joi.string()
+    .min(3)
+    .max(30) }
 
 (2) POST http://serverName:portNumber/api/admin/changeAuth
 
-body: {id: String, isAuthorized: String}
+body: { id: Joi.string()
+    .min(3)
+    .max(30),
+  isAuthorized: Joi.boolean() }
 
 ### Details (sensor and actuators)
 
@@ -198,7 +216,13 @@ returns the current status of motors
 (2-1) POST http://serverName:portNumber/api/extruder
 (2-2) POST http://serverName:portNumber/api/fiber
 
-body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean}
+body: { stop: Joi.boolean(),
+  speed: Joi.number()
+    .min(1)
+    .max(270),
+  direction: Joi.string()
+    .length(1)
+    .pattern(/^[+-]$/) }
 
 updates the current status of motors
 
@@ -214,7 +238,10 @@ returns the current temperature of heater with tenths of degrees
 
 (2) POST http://serverName:portNumber/api/temperature
 
-body: { temp: Number }
+body: { temp: Joi.number()
+    .integer()
+    .min(50)
+    .max(300) }
 
 updates the set points with tenths of degrees
 
@@ -230,7 +257,10 @@ returns the current diameter of a fiber in micrometer unit
 
 (2) POST http://serverName:portNumber/api/micrometer
 
-body: {diameter: Number}
+body: { diameter: Joi.number()
+    .integer()
+    .min(100)
+    .max(500) }
 
 updates the set diameter in micrometer unit.
 
