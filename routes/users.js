@@ -7,17 +7,35 @@ const mongoose = require("mongoose");
 var debug = require("debug")("towerServer:server");
 var express = require("express");
 var router = express.Router();
+const Joi = require("@hapi/joi");
 
 /*
  * sign in API
  *
  * Body: id and pw
  */
+// schema
+const signSchema = Joi.object({
+  id: Joi.string()
+    .min(3)
+    .max(30),
+  pw: Joi.string()
+    .min(3)
+    .max(3)
+});
+
 router.post("/signIn", async function(req, res) {
   let id = req.body.id;
   let pw = req.body.pw;
-  debug(id);
-  debug(pw);
+
+  // data type checking
+  const { error, value } = signSchema.validate({
+    id: id,
+    pw: pw
+  });
+  if (error !== undefined) {
+    res.send(value);
+  }
 
   //find and authenticate user
   let user = await User.findOne({ ID: id });
@@ -43,8 +61,15 @@ router.post("/signIn", async function(req, res) {
 router.post("/signUp", async function(req, res) {
   let id = req.body.id;
   let pw = req.body.pw;
-  debug(id);
-  debug(pw);
+
+  // data type checking
+  const { error, value } = signSchema.validate({
+    id: id,
+    pw: pw
+  });
+  if (error !== undefined) {
+    res.send(value);
+  }
 
   //check duplicate ID
   let user = await User.findOne({ ID: id });
