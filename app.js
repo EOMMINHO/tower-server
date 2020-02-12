@@ -7,6 +7,9 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var debug = require("debug")("towerServer:server");
 
+// Plug and Play
+var pnp = require("./PnP");
+
 // Routers
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");

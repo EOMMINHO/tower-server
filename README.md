@@ -19,6 +19,7 @@ It is made for use with various devices including but not limited to, Android, I
 - [x] status database
 - [ ] DB encryption
 - [ ] PID controlling
+- [ ] Plug and Play
 
 ## Acknowledgments
 This program and physical devices has taken several months to make and benefited from contributions of many individuals. I wish to thank the following for their helps: Joon Hee Won(KAIST), Seongjun Park(KAIST), David Donghyun Kim(Massachusetts Institute of Technology).
@@ -157,7 +158,7 @@ body: {id: String, pw: String}
 
 #### 3. Record Project
 
-You can record and see the project.
+You can record and see the project. (only for authorized user)
 
 (1) POST http://serverName:portNumber/api/record/writeProject
 
@@ -169,7 +170,7 @@ body: {projectName: String}
 
 #### 4. Admin Tools
 
-You can find users and change authorization.
+You can find users and change authorization. (only for admin)
 
 (1) POST http://serverName:portNumber/api/admin/findUserInfo
 
@@ -187,11 +188,15 @@ These APIs will not be available for the unauthorized users.
 
 #### 1. Stepper motor
 
-(1) GET http://serverName:portNumber/api/stepper
+You can see and change the motor speed (only for authorized user)
+
+(1-1) GET http://serverName:portNumber/api/extruder
+(1-2) GET http://serverName:portNumber/api/fiber
 
 returns the current status of motors
 
-(2) POST http://serverName:portNumber/api/stepper
+(2-1) POST http://serverName:portNumber/api/extruder
+(2-2) POST http://serverName:portNumber/api/fiber
 
 body: { speed1: Number, direction1: String, speed2: Number, direction2: String, stop: Boolean}
 
@@ -200,6 +205,8 @@ updates the current status of motors
 - The speed must be lower than 300 REV/MIN for reliable operation.
 
 #### 2. Heater
+
+You can see and change the temperature of the heater (only for authorized user)
 
 (1) GET http://serverName:portNumber/api/temperature
 
@@ -215,13 +222,15 @@ updates the set points with tenths of degrees
 
 #### 3. Micrometer
 
-It is only enabled if you had a micrometer setting. If not, you can still run your machine in a open-loop way!
+It is only enabled if you had a micrometer setting. If not, you can still run your machine in a open-loop way! (only for authorized user)
 
 (1) GET http://serverName:portNumber/api/micrometer
 
 returns the current diameter of a fiber in micrometer unit
 
 (2) POST http://serverName:portNumber/api/micrometer
+
+body: {diameter: Number}
 
 updates the set diameter in micrometer unit.
 

@@ -25,10 +25,15 @@ parser.on("data", line => {
 micrometer.write("MS,0,01,\r");
 
 // router methods
-router.post("/", authUser, function(req, res, next) {
+router.get("/", authUser, function(req, res, next) {
   res.send({
     diameter: diameter
   });
+});
+
+router.post("/", authUser, function(req, res, next) {
+  diameter = req.body.diameter;
+  res.send("diameter set to " + diameter);
 });
 
 module.exports = router;
