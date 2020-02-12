@@ -37,7 +37,7 @@ Hardware Used: A4988 stepper motor driver, NEMA17 stepper motor, Arduino board
 The current host sends command by serial communication without any protocol.
 The update version will include protocol with error recovery.
 
-Arduino need a program in the folder: /dev/stepper/stepper.ino
+Arduino need a program in the folder: "/dev/extruder/extruder.ino" and "/dev/fiber/fiber.ino" for extruder motor and fiber motor respectively.
 
 #### Schematics
 
@@ -48,9 +48,9 @@ will be updated later...
 All commands need to finish with '\n' character. The first part includes the double data type and can including dot notation, which represents the speed of a stepper motor. The unit is revolution per minute. The second part include a single character either '+' or '-'. Each means clockwise and counterclockwise respectively.
 To stop the stepper motor, command "stop".
 
-e.g.) "12.31+\n": Turn the stepper motor with 12.31 rev/min clockwise.
+e.g.) "12.31+\n": Turn the stepper motor with 12.31 RPM clockwise.
 
-e.g.) "31.22-\n": Turn the stepper motor with 31.22 rev/min counterclockwise.
+e.g.) "31.22-\n": Turn the stepper motor with 31.22 RPM counterclockwise.
 
 e.g.) "stop\n": Stop the stepper motor.
 
@@ -75,6 +75,8 @@ will be updated later...
 It is possible not to use laser micrometer. However, using it will enable you to use feedback control to help maintain constant diameter of fiber.
 
 we used [LS9006 model](https://www.keyence.com/products/measure/micrometer/ls-9000/) for < 200 micrometer scale fiber.
+
+The communication is held by RS232 protocol.
 
 #### Schematics
 

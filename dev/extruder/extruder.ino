@@ -83,6 +83,7 @@ void handleSerial()
     }
 
     // actual turning
+    Serial.println("Extruder Process Starts");
     handleMove();
   }
 }
@@ -140,6 +141,7 @@ void handleMove()
             delay(1000);
             delay_flag_BOTTOM = false;
         }
+        Serial.println("Extruder Process Complete");
       }
 
       // (3) limit switch (top)
@@ -157,7 +159,7 @@ void handleMove()
         TOP_PIN_flag = false;
         digitalWrite(STEP, LOW);
         current_RPM = 0;
-        Serial.println("process complete");
+        Serial.println("Extruder Process Initialized");
         delay_flag_TOP = true;
         delay_flag_BOTTOM = true;
         return;

@@ -3,8 +3,6 @@
 
 // Number of steps per output rotation
 #define MOTOR_STEPS 200 // For 1.8 degrees/step motors
-#define MOTOR_ACCEL 10 // revolution per square time
-#define MOTOR_DECEL 10 // revolution per square time
 
 // The pin Arduino
 #define DIR 8
@@ -13,12 +11,14 @@
 #define MS2 11
 #define MS3 12
 
+#define UP HIGH
+#define DOWN LOW
+
 // interval in microseconds
 // current_interval = (3*10^5)/(RPM)
 long current_interval= 5000;
 double current_RPM = 0;
-double want_RPM = 60;
-int current_DIR = LOW;
+int current_DIR = DOWN;
 
 // GLOBAL VARIABLES
 unsigned long previousMicros = 0;
@@ -65,18 +65,18 @@ void handleSerial()
     char incomingDir = incomingString[clength-1];
 
     //set parameters
-    want_RPM = incomingRev;
-    current_RPM = 1;
+    current_RPM = incomingRev;
     current_interval = (3e+5)/(current_RPM);
     if(incomingDir == '+'){
-      current_DIR = HIGH;
-      digitalWrite(DIR, HIGH);
+      current_DIR = UP;
+      digitalWrite(DIR, UP);
     }else if(incomingDir == '-'){
-      current_DIR = LOW;
-      digitalWrite(DIR, LOW);
+      current_DIR = DOWN;
+      digitalWrite(DIR, DOWN);
     }
 
     // actual turning
+    Serial.println("Fiber Process Starts");
     handleMove();
   }
 }
@@ -102,27 +102,29 @@ void handleMove()
         if(incomingString.equals("stop")){ // stop command => stop fiber motor
           digitalWrite(STEP, LOW);
           current_RPM = 0;
+          Serial.println("Fiber Process Ends");
           return;
         }else{ // speed command => change speed immediately
           // get RPM, diretion, and location
+          int clength = incomingString.length();
           double incomingRev = incomingString.toDouble();
           char incomingDir = incomingString[clength-1];
 
           //set parameters
-          want_RPM = incomingRev;
-          current_RPM = 1;
+          current_RPM = incomingRev;
           current_interval = (3e+5)/(current_RPM);
           if(incomingDir == '+'){
-            current_DIR = HIGH;
-            digitalWrite(DIR, HIGH);
+            current_DIR = UP;
+            digitalWrite(DIR, UP);
           }else if(incomingDir == '-'){
-            current_DIR = LOW;
-            digitalWrite(DIR, LOW);
+            current_DIR = DOWN;
+            digitalWrite(DIR, DOWN);
           }
         }
       }
 
-      // (2) acceleration
+      // (2) acceleration (deprecated)
+      /*
       if(current_RPM < want_RPM){
         current_RPM += (current_interval/(1e+6))*(MOTOR_ACCEL);
         current_interval = (3e+5)/(current_RPM);
@@ -130,6 +132,7 @@ void handleMove()
         current_RPM -= (current_interval/(1e+6))*(MOTOR_DECEL);
         current_interval = (3e+5)/(current_RPM);
       }
+      */
 
       //end left time
     }
