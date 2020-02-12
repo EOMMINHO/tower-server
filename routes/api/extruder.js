@@ -4,6 +4,7 @@ const SerialPort = require("serialport");
 const Readline = require("@serialport/parser-readline");
 var express = require("express");
 var router = express.Router();
+const Joi = require("@hapi/joi");
 
 // set up serial port
 const extruder = new SerialPort(process.env.STEPPER1_DEV, {
@@ -29,11 +30,32 @@ router.get("/", authUser, function(req, res, next) {
   });
 });
 
+// schema
+const schema = Joi.object({
+  stop: Joi.boolean(),
+  speed: Joi.number()
+    .min(1)
+    .max(270),
+  direction: Joi.string()
+    .length(1)
+    .pattern(/^[+-]$/)
+});
+
 // update the speed of the motor
 router.post("/", authUser, function(req, res, next) {
   stop = req.body.stop;
   speed = req.body.speed;
   direction = req.body.direction;
+
+  // data type checking
+  const { error, value } = schema.validate({
+    stop: stop,
+    speed: speed,
+    direction: direction
+  });
+  if (error !== undefined) {
+    res.send(value);
+  }
 
   // command via serial and send back to user
   if (stop || speed === "0") {
