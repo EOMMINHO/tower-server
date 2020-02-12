@@ -44,7 +44,7 @@ Arduino need a program in the folder: "/dev/extruder/extruder.ino" and "/dev/fib
 
 will be updated later...
 
-#### command info
+#### serial communications information
 
 All commands need to finish with '\n' character. The first part includes the double data type and can including dot notation, which represents the speed of a stepper motor. The unit is revolution per minute. The second part include a single character either '+' or '-'. Each means clockwise and counterclockwise respectively.
 To stop the stepper motor, command "stop".
@@ -65,7 +65,7 @@ The communication is held by Modbus protocol. The slave number can be chosen on 
 
 will be updated later...
 
-#### command info
+#### serial communications information
 
 - Modbus register number
 - 1000: The current process temperature by tenths of degree.
@@ -101,23 +101,23 @@ Download and install the right version on [download center](https://www.mongodb.
 There is **.env** file in the root directory. Change the environment variables to configure your own machine.
 
 - STEPPER_USE : (boolean) whether using it or not
-- STEPPER1_DEV : the preform stepper device path
-- STEPPER1_BAUD : the preform stepper device baud-rate
-- STEPPER2_DEV : the fiber stepper device path
-- STEPPER2_BAUD : the fiber stepper device baud-rate
+- STEPPER1_DEV : preform stepper device path
+- STEPPER1_BAUD : preform stepper device baud-rate
+- STEPPER2_DEV : fiber stepper device path
+- STEPPER2_BAUD : fiber stepper device baud-rate
 - HEATER_USE : (boolean) whether using it or not
-- HEATER_DEV : the heater device path
-- HEATER_BAUD : the heater device baud-rate
-- HEATER_SLAVE : the heater device Mosbus slave number
+- HEATER_DEV : heater device path
+- HEATER_BAUD : heater device baud-rate
+- HEATER_SLAVE : heater device Mosbus slave number
 - MICROMETER_USE : (boolean) whether using it or not
 - MICROMETER_DEV : micrometer device path
 - MICROMETER_BAUD : micrometer baud-rate
-- PORT : the port used by the server
-- DB_HOST : the name of the host DB
-- DB_PORT : the port used by the host DB
-- DB_SUNAME : the superuser ID for DB
-- DB_PW : the password of SU for DB
-- JWT_PRIVATE_KEY : the private key used for encrypting JWT
+- PORT : port used by the server
+- DB_HOST : name of the host DB
+- DB_PORT : port used by the host DB
+- DB_SUNAME : superuser ID for DB
+- DB_PW : password of SU for DB
+- JWT_PRIVATE_KEY : private key used for encrypting JWT
 
 ### 3. Node.js
 
