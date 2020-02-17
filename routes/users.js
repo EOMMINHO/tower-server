@@ -49,7 +49,10 @@ router.post("/signIn", async function(req, res) {
     { isAuthorized: user.isAuthorized, isAdmin: user.isAdmin },
     process.env.JWT_PRIVATE_KEY
   );
-  res.header("x-auth-token", token).send(token);
+  //res.header("x-auth-token", token).send(token);
+  res
+    .set({ "x-auth-token": token, "Access-Control-Allow-Origin": "*" })
+    .send(token);
 });
 
 /*
