@@ -21,7 +21,7 @@ const signSchema = Joi.object({
     .max(30),
   pw: Joi.string()
     .min(3)
-    .max(3)
+    .max(30)
 });
 
 router.post("/signIn", async function(req, res) {

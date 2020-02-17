@@ -95,6 +95,7 @@ Download and install the right version on [download center](https://www.mongodb.
 
 * /data/db folder permission required for MongoDB.
 * Use MongoDB Compass for GUI interaction.
+* command as "$ mongod --bind_ip_all" to connect it remotely.
 
 ### 2. Environment Configuration
 
@@ -138,6 +139,8 @@ To request via API call, you would need to install [postman](https://www.postman
 
 All body requirements are writen as [Joi](https://hapi.dev/family/joi/tester/) statement. 
 
+Every authorized API call requires valid x-auth-token in headers.
+
 ### Details (user information)
 
 We use REST API to update and record user information for their projects.
@@ -154,13 +157,16 @@ Body
 
 #### 2. Sign-In
 
-You can check authentication
+You can be authenticated.
 
 (1) POST http://serverName:portNumber/api/users/signIn
 
 Body
 - id: string.min(3).max(30)
 - pw: string.min(3).max(30)
+
+Return
+- x-auth-token: use it for authorized API call
 
 #### 3. Record Project
 
