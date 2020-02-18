@@ -34,7 +34,7 @@ router.post("/signIn", async function(req, res) {
     pw: pw
   });
   if (error !== undefined) {
-    res.send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
   }
 
   //find and authenticate user
@@ -71,7 +71,7 @@ router.post("/signUp", async function(req, res) {
     pw: pw
   });
   if (error !== undefined) {
-    res.send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
   }
 
   //check duplicate ID

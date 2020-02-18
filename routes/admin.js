@@ -30,7 +30,7 @@ router.post("/findUserInfo", authAdmin, async function(req, res) {
     id: id
   });
   if (error !== undefined) {
-    res.send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
   }
 
   //find and authenticate user
@@ -58,7 +58,7 @@ router.post("/changeAuth", authAdmin, async function(req, res) {
     isAuthorized: isAuthorized
   });
   if (error !== undefined) {
-    res.send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
   }
 
   //find and authenticate user

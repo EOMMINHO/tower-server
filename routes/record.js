@@ -41,7 +41,7 @@ router.post("/writeProject", authUser, async function(req, res) {
     diameter: diameter
   });
   if (error !== undefined) {
-    res.send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
   }
 
   //change String array to date array
@@ -80,7 +80,7 @@ router.post("/readProject", authUser, async function(req, res) {
     projectName: projectName
   });
   if (error !== undefined) {
-    res.send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
   }
 
   let project = await Project.findOne({ projectName: projectName });
