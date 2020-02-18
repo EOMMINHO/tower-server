@@ -74,4 +74,8 @@ router.post("/changeAuth", authAdmin, async function(req, res) {
   return res.send(user);
 });
 
+router.post("/deleteUser", authAdmin, async function(req, res) {
+  return res.status(400).send("under development");
+});
+
 module.exports = router;

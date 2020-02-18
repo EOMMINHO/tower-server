@@ -20,6 +20,7 @@ It is made for use with various devices including but not limited to, Android, I
 - [ ] DB encryption
 - [ ] PID controlling
 - [ ] Plug and Play
+- [ ] delete user
 
 ## Acknowledgments
 This program and physical devices has taken several months to make and benefited from contributions of many individuals. I wish to thank the following for their helps: Joon Hee Won(KAIST), Seongjun Park(KAIST), David Donghyun Kim(Massachusetts Institute of Technology).
@@ -197,14 +198,19 @@ Body
 
 You can find users and change authorization. (only for admin)
 
-(1) POST http://serverName:portNumber/api/admin/findUserInfo
+(1) POST http://serverName:portNumber/api/admin/findEveryUser
+
+Body
+- NULL
+
+(2) POST http://serverName:portNumber/api/admin/findUserInfo
 
 Body
 - id: Joi.string()
     .min(3)
     .max(30)
 
-(2) POST http://serverName:portNumber/api/admin/changeAuth
+(3) POST http://serverName:portNumber/api/admin/changeAuth
 
 Body
 - id: Joi.string()
