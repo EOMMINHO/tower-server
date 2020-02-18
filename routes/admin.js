@@ -12,7 +12,7 @@ const Joi = require("@hapi/joi");
 
 // find every user
 router.post("/findEveryUser", authAdmin, async function(req, res) {
-  let user = User.find({});
+  let user = await User.find({});
 
   return res.send(user);
 });
