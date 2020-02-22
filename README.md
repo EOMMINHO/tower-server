@@ -6,7 +6,7 @@ It is a fiber drawing tower server for [BNILab, KAIST](https://www.bnilab.com/) 
 
 It is made for use with various devices including but not limited to, Android, IOS, Web browsers to control the fiber drawing tower in BNILab, KAIST. Andriod and IOS application can be downloaded separately.
 
-:exclamation: This is an API server repository and the [client repository](https://github.com/EOMMINHO/tower-client) is available separately.
+:exclamation: This is an API server repository and the [client repository](https://github.com/EOMMINHO/tower-client-mobile) is available separately.
 
 ### Updates
 
@@ -23,6 +23,7 @@ It is made for use with various devices including but not limited to, Android, I
 - [ ] delete user
 
 ## Acknowledgments
+
 This program and physical devices has taken several months to make and benefited from contributions of many individuals. I wish to thank the following for their helps: Joon Hee Won(KAIST), Seongjun Park(KAIST), David Donghyun Kim(Massachusetts Institute of Technology).
 I thank all other members, BNILab, KAIST.
 
@@ -94,9 +95,9 @@ We use MongoDB for authentication, authorization, and saving other user project 
 
 Download and install the right version on [download center](https://www.mongodb.com/download-center/community).
 
-* /data/db folder permission required for MongoDB.
-* Use MongoDB Compass for GUI interaction.
-* command as "$ mongod --bind_ip_all" to connect it remotely.
+- /data/db folder permission required for MongoDB.
+- Use MongoDB Compass for GUI interaction.
+- command as "\$ mongod --bind_ip_all" to connect it remotely.
 
 ### 2. Environment Configuration
 
@@ -138,7 +139,7 @@ To request via API call, you would need to install [postman](https://www.postman
 1. POST the temperature, stepper speed, and fiber diameter. The minimum and maximum of them exist.
 2. GET current status.
 
-All body requirements are writen as [Joi](https://hapi.dev/family/joi/tester/) statement. 
+All body requirements are writen as [Joi](https://hapi.dev/family/joi/tester/) statement.
 
 Every authorized API call requires valid x-auth-token in headers.
 
@@ -153,6 +154,7 @@ You can make an account
 (1) POST http://serverName:portNumber/api/users/signUp
 
 Body
+
 - id: string.min(3).max(30)
 - pw: string.min(3).max(30)
 
@@ -163,10 +165,12 @@ You can be authenticated.
 (1) POST http://serverName:portNumber/api/users/signIn
 
 Body
+
 - id: string.min(3).max(30)
 - pw: string.min(3).max(30)
 
 Return
+
 - x-auth-token: use it for authorized API call
 
 #### 3. Record Project
@@ -176,23 +180,25 @@ You can record and see the project. (only for authorized user)
 (1) POST http://serverName:portNumber/api/record/writeProject
 
 Body
+
 - projectName: Joi.string()
-    .min(2)
-    .max(100)
+  .min(2)
+  .max(100)
 - updated: Joi.string().isoDate()
 - temp: Joi.number()
-    .integer()
-    .min(50)
-    .max(300)
+  .integer()
+  .min(50)
+  .max(300)
 - recordDate: Joi.array().items(Joi.string())
 - diameter: Joi.array().items(Joi.number())
 
 (2) POST http://serverName:portNumber/api/record/readProject
 
 Body
+
 - projectName: Joi.string()
-    .min(2)
-    .max(100)
+  .min(2)
+  .max(100)
 
 #### 4. Admin Tools
 
@@ -201,22 +207,33 @@ You can find users and change authorization. (only for admin)
 (1) POST http://serverName:portNumber/api/admin/findEveryUser
 
 Body
+
 - NULL
 
 (2) POST http://serverName:portNumber/api/admin/findUserInfo
 
 Body
+
 - id: Joi.string()
-    .min(3)
-    .max(30)
+  .min(3)
+  .max(30)
 
 (3) POST http://serverName:portNumber/api/admin/changeAuth
 
 Body
+
 - id: Joi.string()
-    .min(3)
-    .max(30)
+  .min(3)
+  .max(30)
 - isAuthorized: Joi.boolean()
+
+(4) POST http://serverName:portNumber/api/admin/deleteUser
+
+Body
+
+- id: Joi.string()
+  .min(3)
+  .max(30)
 
 ### Details (sensor and actuators)
 
@@ -239,13 +256,14 @@ returns the current status of motors
 (2-2) POST http://serverName:portNumber/api/fiber
 
 Body
+
 - stop: Joi.boolean()
 - speed: Joi.number()
-    .min(1)
-    .max(270)
+  .min(1)
+  .max(270)
 - direction: Joi.string()
-    .length(1)
-    .pattern(/^[+-]$/)
+  .length(1)
+  .pattern(/^[+-]\$/)
 
 updates the current status of motors
 
@@ -263,10 +281,11 @@ returns the current temperature of heater with tenths of degrees
 (2) POST http://serverName:portNumber/api/temperature
 
 Body
+
 - temp: Joi.number()
-    .integer()
-    .min(50)
-    .max(300)
+  .integer()
+  .min(50)
+  .max(300)
 
 updates the set points with tenths of degrees
 
@@ -284,10 +303,11 @@ returns the current diameter of a fiber in micrometer unit
 (2) POST http://serverName:portNumber/api/micrometer
 
 Body
+
 - diameter: Joi.number()
-    .integer()
-    .min(100)
-    .max(500)
+  .integer()
+  .min(100)
+  .max(500)
 
 updates the set diameter in micrometer unit.
 
@@ -296,7 +316,6 @@ updates the set diameter in micrometer unit.
 It uses high power heaters to draw fiber from a preform. It can cause severe damage to you.
 
 Always be careful while using it !!!
-
 
 ## Extra Notes
 

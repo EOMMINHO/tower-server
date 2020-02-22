@@ -75,7 +75,20 @@ router.post("/changeAuth", authAdmin, async function(req, res) {
 });
 
 router.post("/deleteUser", authAdmin, async function(req, res) {
-  return res.status(400).send("under development");
+  let id = req.body.id;
+  // data type checking
+  const { error, value } = findUserSchema.validate({
+    id: id
+  });
+  if (error !== undefined) {
+    res.status(400).send(error.details[0].message);
+  }
+
+  //find and authenticate user
+  let user = await User.findOneAndDelete({ ID: id });
+  if (!user) return res.status(400).send("no such user.");
+
+  return res.send(user);
 });
 
 module.exports = router;
