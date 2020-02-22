@@ -53,13 +53,14 @@ const schema = Joi.object({
 
 //set the setpoint with tenths of degree.
 router.post("/", authUser, function(req, res, next) {
-  let temp = req.body.temp * 10;
+  let temp = req.body.temp;
   // data type checking
   const { error, value } = schema.validate({ temp: temp });
   if (error !== undefined) {
     res.status(400).send(error.details[0].message);
     return;
   }
+  temp = temp * 10;
 
   // if not error, write via Modbus protocol
   master.writeSingleRegister(process.env.HEATER_SLAVE, 1001, temp).then(
