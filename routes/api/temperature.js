@@ -47,17 +47,18 @@ router.get("/", authUser, async function(req, res, next) {
 const schema = Joi.object({
   temp: Joi.number()
     .integer()
-    .min(50)
-    .max(300)
+    .min(0)
+    .max(400)
 });
 
 //set the setpoint with tenths of degree.
 router.post("/", authUser, function(req, res, next) {
-  let temp = req.body.temp;
+  let temp = req.body.temp * 10;
   // data type checking
   const { error, value } = schema.validate({ temp: temp });
   if (error !== undefined) {
     res.status(400).send(error.details[0].message);
+    return;
   }
 
   // if not error, write via Modbus protocol

@@ -284,8 +284,8 @@ Body
 
 - temp: Joi.number()
   .integer()
-  .min(50)
-  .max(300)
+  .min(0)
+  .max(400)
 
 updates the set points with tenths of degrees
 
