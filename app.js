@@ -6,6 +6,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var debug = require("debug")("towerServer:server");
+var cors = require("cors");
 
 // Plug and Play
 var pnp = require("./PnP");
@@ -43,6 +44,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());
 app.use(express.static("public"));
+app.use(cors());
 
 //set routers
 app.use("/", indexRouter);
