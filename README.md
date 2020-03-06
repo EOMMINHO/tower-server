@@ -20,11 +20,11 @@ It is made for use with various devices including but not limited to, Android, I
 - [ ] DB encryption
 - [ ] PID controlling
 - [ ] Plug and Play
-- [ ] delete user
+- [x] delete user
 
 ## Acknowledgments
 
-This program and physical devices has taken several months to make and benefited from contributions of many individuals. I wish to thank the following for their helps: Joon Hee Won(KAIST), Seongjun Park(KAIST), David Donghyun Kim(Massachusetts Institute of Technology).
+This program and physical devices has taken several months to make and benefited from contributions of many individuals. I wish to thank the following for their helps: Joon Hee Won(KAIST), Seongjun Park(KAIST), and David Donghyun Kim(Massachusetts Institute of Technology).
 I thank all other members, BNILab, KAIST.
 
 Minho Eom.
@@ -300,16 +300,27 @@ It is only enabled if you had a micrometer setting. If not, you can still run yo
 
 returns the current diameter of a fiber in micrometer unit
 
-(2) POST http://serverName:portNumber/api/micrometer
+(2) POST http://serverName:portNumber/api/micrometer/pidSetting
 
 Body
 
+- P: Joi.number(),
+- I: Joi.number(),
+- D: Joi.number(),
 - diameter: Joi.number()
   .integer()
   .min(100)
   .max(500)
 
-updates the set diameter in micrometer unit.
+Set PID controller.
+
+(3) POST http://serverName:portNumber/api/micrometer/pidOn
+
+Start PID controller.
+
+(4) POST http://serverName:portNumber/api/micrometer/pidOff
+
+Stop the PID controller.
 
 ## WATCH OUT!
 

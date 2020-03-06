@@ -1,9 +1,4 @@
-const SerialPort = require("serialport");
+const { GeneratePID, PIDcontrol, currentCtr } = require("./utils/pid");
 
-async function listSerial() {
-  let listResult = await SerialPort.list();
-
-  console.log(listResult);
-}
-
-listSerial();
+GeneratePID(0.25, 0.1, 0.1, 400);
+currentCtr();
