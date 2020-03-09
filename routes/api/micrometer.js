@@ -12,7 +12,7 @@ const micrometer = new SerialPort(process.env.MICROMETER_DEV, {
   baudRate: parseInt(process.env.MICROMETER_BAUD)
 });
 
-const parser = new Readline();
+const parser = new Readline({ delimiter: "\r" });
 
 micrometer.pipe(parser);
 
@@ -25,11 +25,10 @@ let turnOn = false;
 
 // get continuous serial data from micrometer
 parser.on("data", line => {
-  // TODO: line to number diameter
   currentDiameter = line;
 });
 
-micrometer.write("MS,0,01,\r");
+micrometer.write("MS,0,01\r");
 
 // router methods
 router.get("/", authUser, function(req, res, next) {
@@ -82,7 +81,7 @@ router.post("/pidOn", authUser, function(req, res, next) {
 });
 
 // turn off PID controller
-router.post("pidOff", authUser, function(req, res, next) {
+router.post("/pidOff", authUser, function(req, res, next) {
   if (turnOn) {
     clearInterval(intervalID);
     turnOn = false;

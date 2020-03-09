@@ -300,6 +300,10 @@ It is only enabled if you had a micrometer setting. If not, you can still run yo
 
 returns the current diameter of a fiber in micrometer unit
 
+e.g. "M+00000292" for 292 micrometer fiber
+
+e.g. "M-09999999" for error
+
 (2) POST http://serverName:portNumber/api/micrometer/pidSetting
 
 Body
