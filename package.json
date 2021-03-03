@@ -21,7 +21,7 @@
     "mongoose": "^5.8.9",
     "morgan": "~1.9.1",
     "node-pid-controller": "^1.0.1",
-    "pug": "2.0.0-beta11",
+    "pug": "3.0.1",
     "serialport": "^8.0.6",
     "socket.io": "^2.3.0"
   },
